@@ -80,7 +80,7 @@
           regions: "",
           data: "",
         },
-        worksheetName: "data",
+        worksheetName: "传感器数据",
         pickerOptions2: {
           shortcuts: [{
             text: '最近一周',

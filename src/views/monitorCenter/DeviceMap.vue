@@ -8,7 +8,7 @@
         <span>设备地图</span>
       </div>
       <div class="text item">
-        <bai-du-map ref="map" height="660px"></bai-du-map>
+        <bai-du-map ref="map" height="520px"></bai-du-map>
       </div>
     </el-card>
     </el-col >
@@ -20,15 +20,7 @@
           label="设备名称"
          >
           </el-table-column>
-          <el-table-column
-            label="纬度"
-            prop="latitude">
-          </el-table-column>
-          <el-table-column
-            prop="longitude"
-            label="经度"
-          >
-          </el-table-column>
+
           <el-table-column
           label="地址"
           prop="address">
