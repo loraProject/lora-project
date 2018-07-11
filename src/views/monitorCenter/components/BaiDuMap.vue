@@ -15,7 +15,7 @@
       height: {
         type: String,
         default() {
-          return "600px"
+          return "50 vh"
         }
       },
       width: {

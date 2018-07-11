@@ -30,29 +30,33 @@
   import DataTable from "./components/dataTable"
   import 'element-ui/lib/theme-chalk/base.css';
 
+
     export default {
         name: "HistoryData",
         components:{ControlPanel, DataTable},
         mounted(){
           //初始化
           for (let i= 0; i < 30; i++){
-
             this.windData.push({date:"2016-01-01",devName:"devName",value:"19"})
           }
+          this.downloadList = this.windData;
+          this.dataMap = new  Map([['wind',this.windData],['temperature',this.temperatureData],['humidity',this.humidityData],['gas',this.gasData]]);
         },
         data(){
           return { // 具体字段要根据后台来确定
             controlForms: {
               devEui:'',
               durDate:'',
-
             },
             temperatureData:[],
             windData:new Array(20).fill({date:"2017-01-01",devName:"devName",value:"18"}),
-            humidityData:[],
-            gasData:[],
+            humidityData:new Array(10).fill({date:"2017-01-01",devName:"humidityData",value:"18"}),
+            gasData:new Array(10).fill({date:"2017-01-01",devName:"gasData",value:"18"}),
             show2: true,
-            nowTabs:''
+            nowTabs:'wind',
+            downloadList:'',
+            //这个后期应该根据后台数据动态改变
+            dataMap:''
           }
         },
         methods:{
@@ -62,16 +66,38 @@
           },
           exportsheet(sheetName){
 
+            console.log(this.downloadList)
+            import('@/vendor/Export2Excel').then(excel=>{
+              const tHeader = ['时间', '设备名称', '数据']
+              const filterVal = ['date', 'devName', 'value']
+              const list =  this.downloadList
+              const data = this.formatJson(filterVal, list)
+              excel.export_json_to_excel({
+                header: tHeader,
+                data,
+                filename: this.nowTabs + ' | ' + sheetName,
+                autoWidth: true
+              })
+
+            })
+
           },
           getDevice(data){
             this.controlForms.devEui = data;
-            console.log(data);
           },
           changeTabs(tab){
             this.nowTabs = tab.name;
+            this.downloadList = this.dataMap.get(tab.name);
+            console.log(this.downloadList)
           },
-          getTableData(){
-            // 刷新表格数据
+          formatJson(filterVal, jsonData) {
+            return jsonData.map(v => filterVal.map(j => {
+              if (j === 'timestamp') {
+                return parseTime(v[j])
+              } else {
+                return v[j]
+              }
+            }))
           }
         }
 
