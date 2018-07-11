@@ -9,19 +9,13 @@
             <h3 class="title">登陆</h3>
           </div>
           <el-form-item prop="username">
-<!--                    <span class="svg-container svg-container_login">
-                      <svg-icon icon-class="user"></svg-icon>
-                    </span>-->
+<!--
             <el-input name="username"   v-model="loginForm.username" type="text"  autoComplete="on"  placeholder="username"></el-input>
           </el-form-item>
           <el-form-item prop="password">
-  <!--                    <span class="svg-container">
-                        <svg-icon icon-class="password" />
-                      </span>-->
+  <!--
             <el-input name="password" :type="passwordType"   v-model="loginForm.password"  autoComplete="on"  placeholder="password"/>
-<!--                    <span class="show-pwd" @click="showPwd">
-                      <svg-icon icon-class="eye" />
-                  </span>-->
+
           </el-form-item>
 
           <el-button type="primary" style="width:100%;margin-bottom:30px;"  :loading="loading" @click.native.prevent="handleLogin">登陆</el-button>

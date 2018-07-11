@@ -91,6 +91,9 @@
       position: absolute;
       z-index: 999;
     }
+    .main-container{
+      height: 100%;
+    }
   }
 
 </style>

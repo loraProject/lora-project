@@ -76,7 +76,8 @@ export default {
 <style scoped  lang="scss">
  .map-container{
    padding: 32px;
-   background-color: rgb(240, 242, 245);
+  /* background-color: rgb(240, 242, 245);*/
+   min-height: 100%;
  }
 
  .clearfix:before,

@@ -24,6 +24,9 @@
               个人信息
             </el-dropdown-item>
           </a>
+          <el-dropdown-item >
+            <span  @click="guide" style="display:block;">引导</span>
+          </el-dropdown-item>
           <el-dropdown-item divided>
             <span @click="logout" style="display:block;">退出</span>
           </el-dropdown-item>
@@ -37,10 +40,9 @@
 import { mapGetters } from 'vuex'
 import Breadcrumb from '@/components/Breadcrumb'
 import Hamburger from '@/components/Hamburger'
-/*import ErrorLog from '@/components/ErrorLog'
-import Screenfull from '@/components/Screenfull'
-import LangSelect from '@/components/LangSelect'
-import ThemePicker from '@/components/ThemePicker'*/
+import * as Driver from 'driver.js' // import driver.js
+import 'driver.js/dist/driver.min.css' // import driver.js css
+import steps from './defineSteps'
 
 export default {
   components: {
@@ -49,7 +51,8 @@ export default {
   },
   data(){
     return{
-      imgSrc : require("../../../assets/logo.png")
+      imgSrc : require("../../../assets/logo.png"),
+      driver: null
     }
   },
   computed: {
@@ -59,14 +62,24 @@ export default {
       'avatar'
     ])
   },
+  mounted(){
+    this.driver = new Driver()
+  },
   methods: {
     toggleSideBar() {
       this.$store.dispatch('toggleSideBar')
     },
     logout() {
+
+      console.log("退出");
       this.$store.dispatch('LogOut').then(() => {
         location.reload()// In order to re-instantiate the vue-router object to avoid bugs
       })
+    },
+    guide(){
+      console.log("引导")
+      this.driver.defineSteps(steps)
+      this.driver.start()
     }
   }
 }

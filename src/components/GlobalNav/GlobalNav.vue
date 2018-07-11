@@ -65,7 +65,7 @@
         routerOne :{
           type:String,
           default() {
-            return "/mainIndex"
+            return "/index"
           }
         },
         tips_2:{
@@ -77,7 +77,7 @@
         routerTwo :{
           type:String,
           default() {
-            return "/mainIndex"
+            return "/index"
           }
         }
       }
