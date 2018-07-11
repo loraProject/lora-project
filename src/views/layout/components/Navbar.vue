@@ -6,12 +6,10 @@
 
       <el-dropdown class="avatar-container right-menu-item" trigger="click">
         <div class="avatar-wrapper">
-
          <!-- lyx need overwrite-->
           <img class="user-avatar" v-lazy="imgSrc">
           <i class="el-icon-caret-bottom"></i>
         </div>
-
        <!-- lyx  测试测试测试-->
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
