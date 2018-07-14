@@ -54,7 +54,6 @@ const user = {
           if (data.result == true){  // 登陆成功
             console.log("登陆成功");
             commit('SET_TOKEN', data.token)
-            console.log(userInfo.username.trim())
             commit('SET_NAME', userInfo.username.trim())
             setToken(response.data.token)
             resolve({status:true,info:response.data.token})
@@ -73,12 +72,9 @@ const user = {
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
 
-        console.log("in getuserinfo")
 
-        console.log(state.token)
         getUserInfo(state.token).then(response => {
 
-          console.log(response)
 
           if (!response.data) { // 由
             reject('error')
@@ -86,17 +82,25 @@ const user = {
           const res = response.data
           const data = res.data;
           if (res.code === 1){
-            console.log(data.roles)
             if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
               commit('SET_ROLES', data.roles)
+
+              commit('SET_NAME',data.username)
+              resolve(response.data)
             } else {
+              resolve()
               reject('getInfo: roles must be a non-null array !')
             }
           }else {
-            this.$message("token失效或错误")
+           // this.$message("token失效或错误"); // token失效所以清空token
+            commit('SET_TOKEN', '')
+            commit('SET_ROLES', [])
+            commit('SET_NAME', '')
+            removeToken()
+            resolve()
           }
 
-          resolve(response.data)
+
         }).catch(error => {
           reject(error)
         })

@@ -33,7 +33,7 @@
       pointData: {
         type: Array,
         default() {
-          return [{"latitude": 118.89472222222223, "longitude": 31.905, "label": "设备1"},
+          return [{"latitude": 118.8920008888889, "longitude": 31.910911111111112, "label": "当前位置"},
           ]
         }
       }
@@ -48,7 +48,6 @@
       return {
         map: "",
         mapPoints: [], //记录地图上的点
-        testData: [{"latitude": 117.89472222222223, "longitude": 30.905, "label": "水产养殖系统1"}]
       }
     },
     methods: {
@@ -115,7 +114,6 @@
       },
       addPointArray(pointData) {
 
-        console.log("in BaiduMap.vue, trigger on addPointArray");
         var This = this;
         let points = [];
         pointData.forEach((point) => {

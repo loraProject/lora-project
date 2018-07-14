@@ -14,7 +14,7 @@
         <el-dropdown-menu slot="dropdown">
           <router-link to="/">
             <el-dropdown-item>
-              用户名称
+              {{this.name}}
             </el-dropdown-item>
           </router-link>
           <a target='_blank' >
@@ -50,7 +50,7 @@ export default {
   data(){
     return{
       imgSrc : require("../../../assets/logo.png"),
-      driver: null
+      driver: null,
     }
   },
   computed: {
@@ -61,7 +61,8 @@ export default {
     ])
   },
   mounted(){
-    this.driver = new Driver()
+
+  this.driver = new Driver()
   },
   methods: {
     toggleSideBar() {
