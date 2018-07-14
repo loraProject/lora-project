@@ -10,7 +10,16 @@ module.exports = {
     // Paths
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
-    proxyTable: {},
+    proxyTable: {
+      '/list': {
+        target: 'http://localhost:8081',
+        changeOrigin: true,
+        secure: false,     //注意如果是https 一定要加这一句
+        pathRewrite: {
+          '^/list': ''
+        }
+      }
+    },
 
     // Various Dev Server settings
     host: 'localhost', // can be overwritten by process.env.HOST
