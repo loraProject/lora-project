@@ -1,7 +1,7 @@
 <template>
  <!-- <h1>首页，展示传感器实时数据图表</h1>-->
   <div class="dashboard-container">
-  <panel-group v-bind:data1=number @handleSetLineChartData="handleSetLineChartData" ></panel-group>
+  <panel-group v-bind:data1=number @handleSetLineChartData="handleSetLineChartData" class="panel-group"></panel-group>
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
       <line-chart :chart-data="lineChartData"  v-bind:x-axis-data="xAxisData"></line-chart>

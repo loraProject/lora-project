@@ -1,29 +1,30 @@
 import request from '@/utils/request'
-
+import qs from 'qs'
+import {getToken} from "../utils/auth";
 export function loginByUsername(username, password) {
-  const data = {
-    username,
-    password
-  }
-  return request({
-    url: '/login/login',
-    method: 'post',
-    data
-  })
+
+  let param = new URLSearchParams()
+
+  param.append('userid',username)
+  param.append('password', password)
+  return request.post('/weblogin',param)
 }
 
 export function logout() {
-  return request({
-    url: '/login/logout',
-    method: 'post'
-  })
+
+  return request.post('/user/logout',
+    {headers: {token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNTMxNDgwOTEyLCJ1c2VyaWQiOiJseXgifQ.d70BSBm-ftSSR90uq_CZELpwkseoYpBy6ZKh_EcDkmU"}})
+/*  return request({
+    url: '/user/logout',
+    method: 'post',
+    headers:{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNTMxNDgwOTEyLCJ1c2VyaWQiOiJseXgifQ.d70BSBm-ftSSR90uq_CZELpwkseoYpBy6ZKh_EcDkmU"}
+  })*/
 }
 
 export function getUserInfo(token) {
-  return request({
-    url: '/user/info',
-    method: 'get',
-    params: { token }
-  })
+
+  return request.post( '/userInfo', qs.stringify({token:token}),
+    {headers: {'Content-Type': 'application/x-www-form-urlencoded'}}
+  )
 }
 

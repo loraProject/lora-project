@@ -1,6 +1,5 @@
 <template>
   <div class="Trigger ">
-      <h1>展示触发器</h1>
     <el-card>
       <el-row  class="padswitch style1" type="flex" justify="center">
         <el-col  :span="12" style="padding-bottom: 20px">
@@ -66,12 +65,15 @@
 
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 .padswitch{
   padding-top: 40px;
 }
   .style1{
  /*   margin: 20px;*/
     background-color: rgb(240,242,245);
+  }
+  .Trigger{
+    padding: 32px;
   }
 </style>

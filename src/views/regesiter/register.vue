@@ -81,6 +81,7 @@
 
   import NavBar from '../../components/GlobalNav/GlobalNav'
   import {isvalidUsername} from '@/utils/validate'
+  import request from '@/utils/request'
   export default {
     name: 'register',
     components: {NavBar},
@@ -112,7 +113,7 @@
       },
 */
    /*     {JSON.stringify({"userid":this.username,"password":this.cpassword})}*/
-          this.$axios({
+          request({
             method:'post',
             url:'/list/register',
           /*  headers: {

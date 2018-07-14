@@ -107,7 +107,8 @@
 <style scoped lang="scss">
   .history-container{
     padding: 32px;
-    background-color: rgb(240, 242, 245);
+/*    background-color: rgb(240, 242, 245);*/
+    min-height: 100%;
   }
   .clearfix:before,
   .clearfix:after {

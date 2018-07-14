@@ -32,7 +32,7 @@
               </el-input>
               </el-form-item>
               <el-form-item prop="password">
-                <el-input name="password" placeholder="password" v-model="loginForm.password" size="large">
+                <el-input name="password" placeholder="password" v-model="loginForm.password" size="large" type="password">
                 <template slot="prepend">
                   <span class="svg-container svg-container_login">
                       <svg-icon icon-class="password"></svg-icon>
@@ -41,16 +41,6 @@
               </el-input>
               </el-form-item>
 
-              <el-input placeholder="验证码" size="large">
-                <template slot="append">
-                  <span class="svg-container svg-container_login">
-                      <svg-icon icon-class="user"></svg-icon>
-                  </span>
-                </template>
-              </el-input>
-
-              <!--滑块验证 -->
-              <confirm  style="margin-top: 10px"></confirm>
               <el-checkbox v-model="checked" class="hidden-sm-and-up"  @change="handleCheckedCitiesChange">允许获取个人信息</el-checkbox>
               <el-button type="primary" class="login-button" ref="loginButton"
                          :disabled="!checked"
@@ -115,8 +105,8 @@
         routerOne:'/register'
         ,
         loginForm: {
-          username: 'admin',
-          password: '1111111'
+          username: 'lyx',
+          password: 'liuyunxing'
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
@@ -133,7 +123,32 @@
       },
       handleLogin(){
         // 添加ajax时间
-        this.$message("login");
+
+        this.$refs.loginForm.validate(valid=>{
+          if (valid){
+            this.$store.dispatch('LoginByUsername', this.loginForm)
+              .then((res)=>{
+
+                  console.log("this is info", res)
+                  if (res.status) { // 如果是真
+                    this.$router.push('/')
+                  }else {
+                    this.$message({
+                      showClose: true,
+                      message: res.info,
+                      type: 'error'
+                    });
+                  }
+              })
+              .catch(()=>{
+              })
+          }else{
+            console.log('error submit!!')
+            return false
+          }
+
+        })
+
       },
       routerBack() {
         this.$router.go(-1);

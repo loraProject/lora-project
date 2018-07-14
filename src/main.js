@@ -15,10 +15,13 @@ import  VueLazyload from 'vue-lazyload'
 import 'element-ui/lib/theme-chalk/display.css';
 import store from './store'
 import * as filters from './filters' // global filters
-import axios from 'axios'
+import axios from  'axios'
 
-Vue.config.productionTip = false;
-Vue.prototype.$axios=axios;
+/*
+axios.defaults.baseURL ='http://localhost:8090'
+Vue.prototype.$axios = axios
+Vue.config.productionTip = false;*/
+
 
 /*
 // register global utility filters. 暂时不是很清楚这个是用来干嘛的
