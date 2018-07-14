@@ -49,10 +49,20 @@ const user = {
       const username = userInfo.username.trim()
       return new Promise((resolve, reject) => {
         loginByUsername(username, userInfo.password).then(response => {
+
           const data = response.data
-          commit('SET_TOKEN', data.token)
-          setToken(response.data.token)
-          resolve()
+          if (data.result == true){  // 登陆成功
+            console.log("登陆成功");
+            commit('SET_TOKEN', data.token)
+            console.log(userInfo.username.trim())
+            commit('SET_NAME', userInfo.username.trim())
+            setToken(response.data.token)
+            resolve({status:true,info:response.data.token})
+          }else { // 登陆失败
+
+            resolve({status:false,info:response.data.info})
+          }
+
         }).catch(error => {
           reject(error)
         })
@@ -62,22 +72,31 @@ const user = {
     // 获取用户信息
     GetUserInfo({ commit, state }) {
       return new Promise((resolve, reject) => {
+
+        console.log("in getuserinfo")
+
+        console.log(state.token)
         getUserInfo(state.token).then(response => {
-          if (!response.data) { // 由于mockjs 不支持自定义状态码只能这样hack
+
+          console.log(response)
+
+          if (!response.data) { // 由
             reject('error')
           }
-          const data = response.data
-
-          if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
-            commit('SET_ROLES', data.roles)
-          } else {
-            reject('getInfo: roles must be a non-null array !')
+          const res = response.data
+          const data = res.data;
+          if (res.code === 1){
+            console.log(data.roles)
+            if (data.roles && data.roles.length > 0) { // 验证返回的roles是否是一个非空数组
+              commit('SET_ROLES', data.roles)
+            } else {
+              reject('getInfo: roles must be a non-null array !')
+            }
+          }else {
+            this.$message("token失效或错误")
           }
 
-          commit('SET_NAME', data.name)
-          commit('SET_AVATAR', data.avatar)
-          commit('SET_INTRODUCTION', data.introduction)
-          resolve(response)
+          resolve(response.data)
         }).catch(error => {
           reject(error)
         })

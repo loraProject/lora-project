@@ -115,6 +115,7 @@ export const constantRouterMap = [
       meta: { title: '用户中心', icon: 'peoples', noCache: true }
     }]
   },
+  { path: '*', redirect: '/404', hidden: true }
 
 ]
 
