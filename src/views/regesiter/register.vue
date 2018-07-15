@@ -115,19 +115,10 @@
    /*     {JSON.stringify({"userid":this.username,"password":this.cpassword})}*/
           request({
             method:'post',
-            url:'/list/register',
+            url:'/register',
           /*  headers: {
               "content-Type":"application/json",
             },*/
-            headers:{
-              'Content-type': 'application/json'
-            },
-          /*  data:JSON.stringify(
-              {
-                userid:this.registerForm.username,
-                password:this.registerForm.cpassword
-              },
-            )*/
             params:
               {
                 userid:this.registerForm.username,

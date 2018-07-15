@@ -10,20 +10,20 @@
                 </el-input>
               </el-form-item>
               <el-form-item label="设备EUI">
-                <el-input  placeholder="请输入设备EUI" v-model="deviceEui">
+                <el-input  placeholder="请输入设备16位的EUI" v-model="deviceEui">
                 </el-input>
               </el-form-item>
               <el-form-item label="设备地址">
-               <el-input placeholder="请输入设备地址">
+               <el-input placeholder="请输入设备地址" v-model="devAddress">
                </el-input>
               </el-form-item>
               <el-row style="width: 30%">
-                <el-form-item label="经度">
-                  <el-input placeholder="138">
+                <el-form-item label="经度" >
+                  <el-input placeholder="138" v-model="devLongitude">
                   </el-input>
                 </el-form-item>
-                <el-form-item label="维度">
-                  <el-input placeholder="146">
+                <el-form-item label="维度" >
+                  <el-input placeholder="146" v-model="devDimensionality">
                   </el-input>
                 </el-form-item>
               </el-row>
@@ -40,7 +40,7 @@
 <script>
     import ElRow from "element-ui/packages/row/src/row";
     import ElCard from "element-ui/packages/card/src/main";
-
+    import request from  '@/utils/request'
 
     export default {
       components: {
@@ -51,40 +51,46 @@
         return{
           deviceName:"",
           deviceEui:"",
-          username:"name"
+          devDimensionality:"",
+          devLongitude:"",
+          devAddress:"",
+          responseinfo:"null",
+          responseresult:false,
         }
       },
       methods:{
         addDevice:function () {
-          console.log("hi")
-          this.$axios({
+          //console.log("hi")
+          request({
             method:'post',
-            url:'/list/adddevice',
-            headers:{
-              'Content-type': 'application/json'
-            },
+            url:'/user/adddevice',
             params:
               {
                 devEUI:this.deviceEui,
                 devname:this.deviceName,
-                currentUserid:this.username
+             /*   this.devDimensionality,
+                this.devLongitude,
+                this.devAddress,*/
+
 
               },
 
-          }).then(response =>
+          }).then(response => /*console.log(result.data.info)*/
           {
-
+            this.responseinfo = response.data.info;
+            this.responseresult = response.data.result ;
+            //console.log(this.responseinfo,this.responseresult)
             /*--------------------成功后的操作-------------------------*/
-            if(true){
+            if(this.responseresult == true){
               this.$message({
+                message:this.responseinfo,
                 type:"success"
               });
 
             }
             else {
-              this.$message.error('错');
+              this.$message.error(this.responseinfo);
             }
-
           })
 
         }

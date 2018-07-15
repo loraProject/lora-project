@@ -1,7 +1,7 @@
 <template>
 
   <div class="EchartData">
-    <h1>用来展示历史数据图表</h1>
+    <h1>用来展示过去一天历史数据图表</h1>
     <div id="alldata1" style="width: 1000px; height:500px;"></div>
   </div>
 </template>

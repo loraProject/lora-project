@@ -3,16 +3,16 @@
     <h1>实时数据展示，让传3个感器数据能够实时展示</h1>
     <el-tabs type="border-card">
           <template v-for="n in 1">
-              <el-tab-pane label="数据显示1">
+              <el-tab-pane label="风速">
                 <div id="" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="lineTemperature" >
+              <el-tab-pane label="温度" >
                 <div id="lineTemperature" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="数据显示2">
+              <el-tab-pane label="氨气">
                 <div id="lineTemperature2" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="数据显示3">
+              <el-tab-pane label="湿度">
                 <div id="lineTemperature3" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
           </template>
