@@ -46,6 +46,7 @@
 
 <script>
 
+  import request from '@/utils/request'
   export default {
     name: "ControlPanel",
     props:{
@@ -108,13 +109,30 @@
             }
           }]
         },
-        demoSelectItem:[{label:"item1",value:"value1"},{label:"item2",value:"value2"},{label:"item3",value:"value3"}]
+        demoSelectItem:[]
 
       }
     },
     methods:{
+      getItem(){
+        const This = this
+        request.get('/user/getDevices').then((response)=>{
+          const res = response.data;
+          if (res.code == 1){ //请求成功
+            const devTable  = res.data;
+            devTable.forEach((obj)=>{
+              var devInfo = new Object()
+              devInfo.label = obj.devname
+              devInfo.value = obj.devEUI
+              This.demoSelectItem.push(devInfo)
+            })
+          }
+        })
+      },
 
-
+    },
+    mounted(){
+      this.getItem()
     }
   }
 </script>

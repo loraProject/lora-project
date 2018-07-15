@@ -6,10 +6,10 @@
 
           <canvas id="canvas" width="400" height="400" >cccc</canvas>
           <h1 style="margin-left:80px ">
-            普通用户
+            {{this.userRole}}
           </h1>
           <h3 style="margin-left:80px ">
-            用户名：admin
+           用户名称： {{this.name}}
           </h3>
       </el-col>
       <el-col :span="16"style="height: 600px">
@@ -26,19 +26,39 @@
 <script>
     import ElCard from "element-ui/packages/card/src/main";
     import ElRow from "element-ui/packages/row/src/row";
-
+    import { mapGetters } from 'vuex'
     export default {
+      computed:{
+        ...mapGetters([
+          'name',
+          'roles'
+        ])
+      },
       components: {
         ElRow,
         ElCard},
       name: "UserCenter",
         mounted(){
+/*        console.log(this.roles)
+          if (this.roles.indexOf("admin") > 0){
+            this.userRole = "管理员"
+          }else{
+            this.userRole = "普通用户"
+          }*/
+         const isAdmin =  this.roles.filter((role)=>role == "admin")
+          if (isAdmin != null && isAdmin.length > 0) {
+            this.userRole = "管理员"
+          }else{
+            this.userRole = "普通用户"
+          }
           this.renderTime()
         },
       data() {
         return {
          /* emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'*/
-          emptyGif:'../../../static/img/dog.gif'
+          emptyGif:'../../../static/img/dog.gif',
+          userRole:'没有初始化'
+
         }
       },
         methods:{
