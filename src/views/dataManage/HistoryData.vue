@@ -4,7 +4,7 @@
 
   <el-row :gutter="32">
     <el-col :lg="14" :xl="14" :md="12" :xs="24">
-
+<!--
       <el-tabs type="border-card" @tab-click="changeTabs" value="wind">
         <el-tab-pane label="风速" name="wind">
           <data-table :table-data="windData"></data-table>
@@ -13,7 +13,22 @@
         <el-tab-pane label="湿度" name="humidity"> <data-table :table-data="humidityData"></data-table></el-tab-pane>
         <el-tab-pane label="气体浓度" name="gas"> <data-table :table-data="gasData"></data-table></el-tab-pane>
 
+      </el-tabs>-->
+
+      <template v-if="sensorPanel.length > 0">
+      <el-tabs type="border-card" @tab-click="changeTabs" :value=sensorPanel[0].name>
+        <template v-for="item in sensorPanel">
+          <el-tab-pane :label=item.label :name=item.name>
+            <data-table></data-table>
+          </el-tab-pane>
+        </template>
       </el-tabs>
+      </template>
+      <template v-if="sensorPanel.length <= 0">
+        <el-card style="width: 100%; height: 500px">
+          <h2>暂无传感器</h2>
+        </el-card>
+      </template>
 
     </el-col>
     <el-col :lg="10" :xl="10" :md="12" :xs="24">
@@ -29,7 +44,8 @@
   import ControlPanel from "./components/ControlPanel"
   import DataTable from "./components/dataTable"
   import 'element-ui/lib/theme-chalk/base.css';
-
+  import request from '@/utils/request'
+  import {param} from "../../utils";
 
     export default {
         name: "HistoryData",
@@ -46,7 +62,7 @@
           return { // 具体字段要根据后台来确定
             controlForms: {
               devEui:'',
-              durDate:'',
+              durDate:[],
             },
             temperatureData:[],
             windData:new Array(20).fill({date:"2017-01-01",devName:"devName",value:"18"}),
@@ -56,13 +72,21 @@
             nowTabs:'wind',
             downloadList:'',
             //这个后期应该根据后台数据动态改变
-            dataMap:''
+            dataMap:'',
+            sensorPanel:[]
           }
         },
         methods:{
-          getChangeDate(data){
-            this.controlForms.durDate  = data;
-            console.log(data);
+          getChangeDate(datas){
+            if (datas != null) {
+            this.controlForms.durDate  = datas;
+            console.log(datas)
+            const fromDate = datas[0];
+            const toData = datas[1];
+            console.log(this.getRequestFormatDate(fromDate))
+            console.log(this.getRequestFormatDate(toData))
+            console.log("getChange");
+            }
           },
           exportsheet(sheetName){
 
@@ -82,7 +106,38 @@
             })
 
           },
+          getPanelItem(devEui){
+            console.log("getPanelItem")
+            request.get('/user/devices/getDataSensor',{
+              params:{
+                devEUI:devEui
+              }
+            }).then((response)=>{
+              const res = response.data;
+              console.log(res)
+              if (res.code == 1){
+                this.sensorPanel = res.data // 获取动态panel
+              }else {
+                this.$message(res.info);
+                this.sensorPanel = [] // 清空panel
+              }
+            })
+          },
+          getTabelData(){ // 请求历史数据
+
+          },
+          getRequestFormatDate(date){
+            var strFormat
+            var strMonth = date.getMonth()+1
+            if (strMonth < 10) strMonth = '0' + strMonth;
+            var strDay = date.getDate()
+            if (strDay < 10) strDay = '0' + strDay;
+            strFormat = date.getFullYear() + strMonth + strDay
+            return strFormat
+          },
           getDevice(data){
+            console.log("getDevice",data);
+            this.getPanelItem(data)
             this.controlForms.devEui = data;
           },
           changeTabs(tab){

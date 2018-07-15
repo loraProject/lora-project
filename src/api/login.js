@@ -1,6 +1,5 @@
 import request from '@/utils/request'
 import qs from 'qs'
-import {getToken} from "../utils/auth";
 export function loginByUsername(username, password) {
 
   let param = new URLSearchParams()
@@ -11,14 +10,7 @@ export function loginByUsername(username, password) {
 }
 
 export function logout() {
-
-  return request.post('/user/logout',
-    {headers: {token : "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNTMxNDgwOTEyLCJ1c2VyaWQiOiJseXgifQ.d70BSBm-ftSSR90uq_CZELpwkseoYpBy6ZKh_EcDkmU"}})
-/*  return request({
-    url: '/user/logout',
-    method: 'post',
-    headers:{"token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJkYXRlIjoxNTMxNDgwOTEyLCJ1c2VyaWQiOiJseXgifQ.d70BSBm-ftSSR90uq_CZELpwkseoYpBy6ZKh_EcDkmU"}
-  })*/
+  return request.post('/user/logout')
 }
 
 export function getUserInfo(token) {

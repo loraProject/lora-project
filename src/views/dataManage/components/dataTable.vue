@@ -48,10 +48,7 @@
           tableData:{
             type:Array,
             default(){
-              return [{date:"2017-01-01",devName:"devName",value:"18"},
-                      {date:"2017-01-01",devName:"devName",value:"18"},
-                      {date:"2017-01-01",devName:"devName",value:"18"},
-                      {date:"2017-01-01",devName:"devName",value:"18"}]
+              return []
             }
           }
         },

@@ -15,9 +15,6 @@ service.interceptors.request.use(config => {
  /* config.headers['Content-Type'] ='application/x-www-form-urlencoded';*/
   if (store.getters.token) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
-    console.log("in configure")
-    console.log(getToken())
-    console.log("有token值，配置了token值")
     config.headers['token'] = getToken()
   }
   return config

@@ -49,25 +49,44 @@
 /*  import BaiDu from './components/BaiDuMap'*/
 
     import BaiDuMap from "./components/BaiDuMap";
+    import request from '@/utils/request'
 export default {
 
   name: "DeviceMap",
   components: {BaiDuMap},
   data(){
     return {
-      testData: [{"latitude": '117.89472222222223', "longitude": '30.905', "label": "水产养殖系统2"}],
-      deviceInfo:[{"latitude": '117.89472222222223', "longitude": '30.905', "label": "水产养殖系统1","address":"金陵科技学院"}]
+     /* testData: [{"latitude": '117.89472222222223', "longitude": '30.905', "label": "水产养殖系统2"}],*/
+      deviceInfo:[]
     }
   },
   mounted(){
-    console.log("initMap");
  /*   this.$refs.map.initMap(this.testData);*/
+    this.getDeviceList()
   },
   methods:{
     handleEdit(index, row){
       var DataArray = [];
       DataArray.push(row);
       this.$refs.map.addPointArray(DataArray);
+    },
+    getDeviceList(){
+      var This = this
+      request.get('/user/getDevices').then((response)=>{
+          const res = response.data;
+          if (res.code == 1){ //请求成功
+            const devTable  = res.data;
+            devTable.forEach((obj)=>{
+              var devInfo = new Object()
+              devInfo.latitude = obj.latitude
+              devInfo.longitude = obj.longitude
+              devInfo.label = obj.devname
+              devInfo.address = obj.address
+              This.deviceInfo.push(devInfo)
+            })
+          }
+
+      })
     }
   }
 }

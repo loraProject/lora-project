@@ -31,22 +31,28 @@ router.beforeEach((to, from, next)=> {
       {
         console.log('in store.getters.role.length')
         store.dispatch('GetUserInfo').then((res)=>{// 根据roles权限生成可访问的路由表
-          const  roles = res.data.roles
-          store.dispatch('GenerateRoutes',{roles})
-            .then(()=>{
-              router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
-              next({ ...to, replace: true }) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
-            }).catch(()=>{
-            Message.error(err || 'Verification failed, please login again')
-            next({ path: '/' })
-          })
+          if (res !== null && res.data.roles!= null) {
+            const  roles = res.data.roles
+            store.dispatch('GenerateRoutes', {roles})
+              .then(() => {
+                router.addRoutes(store.getters.addRouters) // 动态添加可访问路由表
+                next({...to, replace: true}) // hack方法 确保addRoutes已完成 ,set the replace: true so the navigation will not leave a history record
+              }).catch(() => {
+              Message.error(err || 'Verification failed, please login again')
+              next({path: '/'})
+            })
+          }else {
+            next({path:'/index'}) // 如果获取用户身份失败，那么跳转到index界面
+          }
 
         })
       }else{
         // 没有动态改变权限的需求可直接next() 删除下方权限判断 ↓
         if (hasPermission(store.getters.roles, to.meta.routes)){
+          console.log("有权限")
           next()//
         }else{
+          console.log("没有权限")
           next({ path: '/401', replace: true, query: { noGoBack: true }})
         }
       }
