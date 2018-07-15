@@ -3,16 +3,16 @@
     <h1>实时数据展示，让传3个感器数据能够实时展示</h1>
     <el-tabs type="border-card">
           <template v-for="n in 1">
-              <el-tab-pane label="数据显示1">
+              <el-tab-pane label="风速">
                 <div id="" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="lineTemperature" >
+              <el-tab-pane label="温度" >
                 <div id="lineTemperature" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="数据显示2">
+              <el-tab-pane label="氨气">
                 <div id="lineTemperature2" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
-              <el-tab-pane label="数据显示3">
+              <el-tab-pane label="湿度">
                 <div id="lineTemperature3" style="width: 1000px; height:500px;"></div>
               </el-tab-pane>
           </template>
@@ -33,8 +33,10 @@
     data(){
       return{
         dataline:[],
+        datatest:[],
         valueline:Math.random()*1000,
         nowline :+new Date(2018,1,1),
+        nowtime:new Date(),
         oneday:24*3600*1000,
 
         /* 实时显示表*/
@@ -127,6 +129,45 @@
             data:this.dataline,
           }]
         },
+        /*测试*/
+        lineOptiontest:{
+          title: {
+            text: '测试'
+          },
+          tooltip: {
+            trigger: 'axis',
+            axisPointer: {
+              animation: false
+            }
+          },
+          xAxis: {
+            type: 'category',
+            splitLine: {
+              show: false
+            }
+          },
+          yAxis: {
+            type: 'value',
+            boundaryGap: [0, '100%'],
+            splitLine: {
+              show: false
+            }
+          },
+          dataZoom:[
+            {
+              type:'slider',
+              start:10,
+              end:60
+            }
+          ],
+          series: [{
+            name: '模拟数据',
+            type: 'line',
+            showSymbol: true,
+            hoverAnimation: false,
+            data: this.datatest
+          }]
+        },
 
 
     }
@@ -138,11 +179,12 @@
       showLineTemperature:function () {
         for (var i=0;i<1000;i++){
           this.dataline.push(this.getdata())
+         // this.datatest.push(this.getvalue())
          // console.log(this.dataline[i].value[1])
         }
         /*-------------------------------实时显示1----------------------*/
         let linechart =this.$echarts.init(document.getElementById('lineTemperature'))
-        linechart.setOption(this.lineOption)
+        linechart.setOption(this.lineOptiontest)
         /*--------------------------------实时显示2--------------------*/
         let linechart2 =this.$echarts.init(document.getElementById('lineTemperature2'))
         linechart2.setOption(this.lineOption)
@@ -151,12 +193,12 @@
         }*/
             //data.shift();
             this.dataline.push(this.getdata());
+            this.datatest.push(this.getvalue())
 
-         // console.log("hi")
           /*-------------------------------数据填入1-------------------------------*/
           linechart.setOption({
             series: [{
-              data: this.dataline
+              data: this.datatest
             }]
           });
           /*-------------------------------数据填入2-------------------------------*/
@@ -171,9 +213,11 @@
       },
       getdata:function () {
         this.nowline = new Date(+this.nowline + this.oneday);
+       // console.log(this.nowline)
         this.valueline = this.valueline +Math.random()*21 - 10;
-        //console.log(this.valueline)
+     //   console.log(this.valueline)
         return {
+          //name:this.nowline.toString(),
           name:this.nowline.toString(),
           value:[
             [this.nowline.getFullYear(), this.nowline.getMonth() + 1, this.nowline.getDate()].join('/'),
@@ -181,6 +225,22 @@
           ]
           /*获取数据*/
         }
+      },
+      getvalue:function () {
+        this.nowtime=new Date()
+        console.log(this.nowtime)
+        this.valueline = this.valueline +Math.random()*21 - 10;
+        console.log(this.valueline)
+        return {
+          //name:this.nowline.toString(),
+          name:this.nowtime.toString(),
+          value: [
+            [this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':'),
+            Math.round(this.valueline)
+          ]
+          /*获取数据*/
+        }
+
       }
     }
   }

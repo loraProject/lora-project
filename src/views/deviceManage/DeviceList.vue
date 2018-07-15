@@ -1,13 +1,97 @@
 <template>
-    <h1>展示设备列表，用卡片的方式，可以展示设备地图，设备电量、设备工作时间等等</h1>
+  <div class="DeviceList">
+    <h1>设备列表</h1>
+    <div class="elcard">
+    <!--<el-row type="flex" justify="center">-->
+      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList">
+        <el-card class="elcard" >
+            <span >设备名：{{dev.devname}}
+            </span>
+          <hr>
+          <span> 设备EUI：{{dev.devEUI}}
+            </span>
+          <hr>
+          <span> 设备维度：{{dev.latitude}}
+            </span>
+          <hr>
+          <span> 设备经度：{{dev.longitude}}
+            </span>
+          <hr>
+          <span> 设备地址：{{dev.address}}
+            </span>
+        </el-card>
+      </el-col>
+   <!--   <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" >
+        <el-card  class="elcard">
+          <div>
+            second
+          </div>
+
+        </el-card>
+      </el-col >
+      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6"  >
+        <el-card class="elcard">
+          <div>
+            three
+          </div>
+        </el-card>
+      </el-col>-->
+    </div>
+  <!--  <ul>
+      <li v-for="dev in devList">
+        <el-card>
+          {{dev.devname}}
+        </el-card>
+      </li>
+    </ul>-->
+    </div>
+  <!--  </el-row>-->
+
 </template>
 
 <script>
+    import ElCard from "element-ui/packages/card/src/main";
+    import  request from '@/utils/request'
     export default {
-        name: "DeviceList"
+      components: {ElCard},
+      name: "DeviceList",
+      data(){
+        return{
+          devname:"",
+          devEUI:"",
+          latitude:"",
+          longitude:"",
+          address:"",
+          devList:[]
+        }
+      },
+      mounted(){
+        this.getdevlist();
+      },
+      methods:{
+        getdevlist:function () {
+          request({
+            methods:'post',
+            url:'/user/getdevices',
+            /*params:{
+
+            }*/
+          }).then(data=>{
+            console.log(data);
+            this.devList=data.data;
+            console.log(this.devList)
+          })
+        }
+      }
     }
 </script>
 
 <style scoped>
+.DeviceList{
 
+}
+  .elcard{
+    margin: 40px;
+
+  }
 </style>

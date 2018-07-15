@@ -81,7 +81,7 @@
 
   import NavBar from '../../components/GlobalNav/GlobalNav'
   import {isvalidUsername} from '@/utils/validate'
-
+  import request from '@/utils/request'
   export default {
     name: 'register',
     components: {NavBar},
@@ -112,6 +112,41 @@
           this.$message.error("密码不相等")
       },
 */
+   /*     {JSON.stringify({"userid":this.username,"password":this.cpassword})}*/
+          request({
+            method:'post',
+            url:'/register',
+          /*  headers: {
+              "content-Type":"application/json",
+            },*/
+            params:
+              {
+                userid:this.registerForm.username,
+                password:this.registerForm.cpassword
+              },
+
+          }).then(response => /*console.log(result.data.info)*/
+          {
+            this.responseinfo = response.data.info;
+            this.responseresult = response.data.result ;
+            //console.log(this.responseinfo,this.responseresult)
+            /*--------------------成功后的操作-------------------------*/
+            if(this.responseresult == true){
+              this.$message({
+                message: this.responseinfo,
+                type:"success"
+              });
+              this.$router.push({path: '/index'});
+
+            }
+            else {
+              this.$message.error({
+                message: this.responseinfo,
+              });
+            }
+
+          })
+
 
       }
     },
@@ -154,6 +189,8 @@
         }
       }
       return {
+        responseinfo:"null",
+        responseresult:false,
         address: "",
         checked: false,
         disabled: true,
@@ -180,9 +217,9 @@
           }]
         }],
         registerForm: {
-          username: 'tangshisi',
-          upassword: 'tangshisi',
-          cpassword: 'tangshisi'
+          username: 'tang',
+          upassword: 'tang',
+          cpassword: 'tang'
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
