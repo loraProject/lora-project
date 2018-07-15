@@ -3,13 +3,21 @@
     <h1>设备列表</h1>
     <div class="elcard">
     <!--<el-row type="flex" justify="center">-->
-      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev in devList">
+      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList">
         <el-card class="elcard" >
             <span >设备名：{{dev.devname}}
             </span>
-          <br>
           <hr>
           <span> 设备EUI：{{dev.devEUI}}
+            </span>
+          <hr>
+          <span> 设备维度：{{dev.latitude}}
+            </span>
+          <hr>
+          <span> 设备经度：{{dev.longitude}}
+            </span>
+          <hr>
+          <span> 设备地址：{{dev.address}}
             </span>
         </el-card>
       </el-col>
@@ -51,6 +59,9 @@
         return{
           devname:"",
           devEUI:"",
+          latitude:"",
+          longitude:"",
+          address:"",
           devList:[]
         }
       },

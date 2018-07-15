@@ -68,9 +68,9 @@
               {
                 devEUI:this.deviceEui,
                 devname:this.deviceName,
-             /*   this.devDimensionality,
-                this.devLongitude,
-                this.devAddress,*/
+                latitude:this.devDimensionality,
+                longitude:this.devLongitude,
+                address:this.devAddress,
 
 
               },
