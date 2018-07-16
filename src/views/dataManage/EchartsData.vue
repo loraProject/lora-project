@@ -3,12 +3,15 @@
   <div class="EchartData">
     <h1>用来展示过去一天历史数据图表</h1>
     <div id="alldata1" style="width: 1000px; height:500px;"></div>
+    <el-button type="primary" v-on:click="getdata">
+    </el-button>
   </div>
 </template>
 
 <script>
   import echarts from 'echarts'
   import Vue from 'vue';
+  import  request from '@/utils/request'
   Vue.prototype.$echarts=echarts
     export default {
         name: "EchartsData",
@@ -156,7 +159,20 @@
                 { name:'平均温度', data:this.number3},
                 { name:'溶解氧', data:this.number4}]
             });
-          }
+          },
+        getdata:function () {
+          request({
+            methods:'post',
+            url:'/user/device/sensor/data/getdatabydate',
+            /*params:{
+
+            }*/
+          }).then(data=>{
+            console.log(data.data);
+          })
+
+        }
+
       }
     }
 </script>
