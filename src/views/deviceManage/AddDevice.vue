@@ -108,7 +108,9 @@
           var map = new BMap.Map('allmap1')
           var point = new BMap.Point(118.8920008888889,  31.910911111111112)
           var geoc = new BMap.Geocoder();
-          map.centerAndZoom(point, 12)
+          map.centerAndZoom(point, 12);
+          var marker = new BMap.Marker(point);        // 创建标注
+          map.addOverlay(marker);
           map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
           map.enableContinuousZoom();
           map.addEventListener("click",function(e){
