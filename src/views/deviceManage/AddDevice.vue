@@ -106,9 +106,11 @@
         },
         getInitmap:function () {
           var map = new BMap.Map('allmap1')
-          var point = new BMap.Point(118.8920008888889,  31.910911111111112)
+          var point = new BMap.Point(118.903787,31.91416)
           var geoc = new BMap.Geocoder();
-          map.centerAndZoom(point, 12)
+          map.centerAndZoom(point, 12);
+          var marker = new BMap.Marker(point);        // 创建标注
+          map.addOverlay(marker);
           map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
           map.enableContinuousZoom();
           map.addEventListener("click",function(e){
@@ -116,6 +118,9 @@
 
             lng=e.point.lng;
             lat=e.point.lat;
+            map.removeOverlay(marker);
+            marker = new BMap.Marker(e.point);        // 创建标注
+            map.addOverlay(marker);
           // console.log(lat)
             geoc.getLocation(e.point, function(rs){
               var addComp = rs.addressComponents;

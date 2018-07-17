@@ -5,6 +5,7 @@
     <h1>{{this.sensorName}}</h1>
     <div id="alldata1" style="width: 1000px; height:500px;"></div>
     <el-button type="primary" v-on:click="getdata">
+      获取数据
     </el-button>
     <el-button @click="printData">显示数据</el-button>
   </div>
@@ -19,6 +20,7 @@
   Vue.prototype.$echarts=echarts
     export default {
         name: "EchartsData",
+      components:{},
         data(){
             return{
               numberx:['01:00','02:00','03:00','04:00','05:00','06:00','07:00','08:00','09:00','10:00','11:00','12:00'],
@@ -26,6 +28,7 @@
               number2:[2.6, 5.9, 9.0, 26.4, 28.7, 70.7, 175.6, 182.2, 48.7, 18.8, 6.0, 2.3],
               number3:[2.0, 2.2, 3.3, 4.5, 6.3, 10.2, 20.3, 23.4, 23.0, 16.5, 12.0, 6.2],
               number4:[2.5, 5.9, 3.6, 7.5, 7.3, 8.9, 17.3, 19.4, 16.0, 18.5, 14.0, 10.2],
+              dataall:[],
               optionData:{
 
                 tooltip: {
@@ -172,15 +175,17 @@
                 { name:'溶解氧', data:this.number4}]
             });
           },
-        getdata:function () {
-          request({
-            methods:'post',
-            url:'/user/device/sensor/data/getdatabydate',
-            /*params:{
-
-            }*/
-          }).then(data=>{
-            console.log(data.data);
+          getdata:function () {
+            let param=new URLSearchParams()
+            param.append('date1',"20180715");
+            param.append('date2',"20180716");
+            param.append('devEUI',"004a770066003304");
+            param.append('typeid',"02");
+            param.append('choice',"qiti");
+          request.post('/user/device/sensor/data/getdatafromdatetodate', param).then(data=>{
+            /*console.log(data.data);*/
+            this.dataall=data.data;
+            console.log(this.dataall)
           })
 
         },
