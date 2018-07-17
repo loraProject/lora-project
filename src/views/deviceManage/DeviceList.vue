@@ -5,20 +5,15 @@
     <!--<el-row type="flex" justify="center">-->
       <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList" :key="dev.devEUI">
         <el-card class="elcard" >
-            <span >设备名：{{dev.devname}}
-            </span>
+          设备名：{{dev.devname}}
           <hr>
-          <span> 设备EUI：{{dev.devEUI}}
-            </span>
+          设备EUI：{{dev.devEUI}}
           <hr>
-          <span> 设备维度：{{dev.latitude}}
-            </span>
+          设备维度：{{dev.latitude}}
           <hr>
-          <span> 设备经度：{{dev.longitude}}
-            </span>
+         设备经度：{{dev.longitude}}
           <hr>
-          <span> 设备地址：{{dev.address}}
-            </span>
+          设备地址：{{dev.address}}
         </el-card>
       </el-col>
    <!--   <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" >
@@ -77,9 +72,9 @@
 
             }*/
           }).then(data=>{
-            console.log(data);
+            //console.log(data);
             this.devList=data.data;
-            console.log(this.devList)
+            //console.log(this.devList)
           })
         }
       }

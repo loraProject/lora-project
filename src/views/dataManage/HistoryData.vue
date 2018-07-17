@@ -15,8 +15,8 @@
       </el-tabs>
       </template>
       <template v-if="sensorPanel.length <= 0">
-        <el-card style="width: 100%; height: 500px">
-          <h2>暂无传感器</h2>
+        <el-card style="width: 100%; height: 600px">
+          <not-found></not-found>
         </el-card>
       </template>
 
@@ -35,20 +35,18 @@
   import DataTable from "./components/dataTable"
   import 'element-ui/lib/theme-chalk/base.css';
   import request from '@/utils/request'
-  import {param} from "../../utils";
+  import NotFound from  './components/404'
+  import store from '../../store'  // 引入全局vuex
+
    /*为了改善阅读效果，当不改变控制面板时不重新请求数据，只有当改变控制面板使重新请求数据*/
     export default {
 
         name: "HistoryData",
-        components:{ControlPanel, DataTable},
+        components:{ControlPanel, DataTable, NotFound},
         mounted(){
           //初始化
-          for (let i= 0; i < 30; i++){
-            this.windData.push({date:"2016-01-01",devName:"devName",value:"19"})
-          }
-          // 初始化下载表
-          // 实际上应当根据后台传来的数据来初始化数据Map，缓存数据
-       //   this.dataMap = new  Map([['wind',this.windData],['temperature',this.temperatureData],['humidity',this.humidityData],['gas',this.gasData]]);
+
+
         },
         data(){
           return { // 具体字段要根据后台来确定
@@ -71,7 +69,8 @@
             dataMap:{'wind':[],'temperature':[],'humidity':[],'gas':[]}, //数据map
             sensorPanel:[], //tab的列表
             nowTableData:new Array(10).fill({date:"2017-01-01",devName:"nowTable",value:"18"}),
-            needRequest:''
+            needRequest:'',
+
           }
         },
         methods:{
@@ -87,7 +86,7 @@
           getChangeDate(datas){
             if (datas != null) {
           //  this.controlForms.durDate  = datas;
-            console.log(datas)
+          //  console.log(datas)
             const fromDate = datas[0];
             const toData = datas[1];
             this.controlForms.durDate.fromData = this.getRequestFormatDate(fromDate);
@@ -98,7 +97,7 @@
             }
             // 改变准备状态
             this.clearReadyRequest()
-            console.log("准备好了吗",this.isReady());
+           // console.log("准备好了吗",this.isReady());
             if (this.isReady()) {
               this.getTabelData()
             }
@@ -126,7 +125,7 @@
             })
           }, // 用于清楚已经请求数据的所有表格
           getPanelItem(devEui){
-            console.log("在getPanelItem之中")
+           // console.log("在getPanelItem之中")
             const That = this
             request.get('/user/devices/getDataSensor',{
               params:{
@@ -134,7 +133,7 @@
               }
             }).then((response)=>{
               const res = response.data;
-              console.log(res)
+              //console.log(res)
               if (res.code == 1){
                 That.sensorPanel = res.data // 获取动态panel
                 // 更新
@@ -144,7 +143,7 @@
                 }
                 this.clearReadyRequest()// 清空准备信息
                 // 判断isReady，使数据能够即使显示到界面中
-                console.log("in request准备好了吗",this.isReady())
+              //  console.log("in request准备好了吗",this.isReady())
                 if (this.isReady()) {
                   this.getTabelData()
                 }
@@ -166,22 +165,26 @@
             request.post('/user/device/sensor/data/getdatafromdatetodate',param).then((response)=>{
 
                 const data = response.data;
-                console.log("返回信息",data)
+               // console.log("返回信息",data)
                 if (response.status == 200) { //请求成功
                     if (data != null) {
                       This.nowTableData = [] // 清空数组
+                      data.sort(this.dataCompare)
                       data.forEach((entry)=> {
                         var obj = new Object();
                         obj.devName = This.nowTabObj.label
                         obj.date = This.getFormatDate(entry.date);
                         obj.value = entry.value;
-                        This.nowTableData.push(obj)
+                        This.nowTableData.push(obj);
+                        // 执行commit
                       })
                     }
                   This.needRequest.set(This.nowTabObj.name,true) // 设置不需要再次执行
                     // 缓存
                   this.dataMap[This.nowTabObj.name] =This.nowTableData; // 设置
-                   console.log("dataMap",This.dataMap)
+                  // 一旦请求到数据就要将数据放入全局的vuex中
+                  this.commitVuex(); // 执行commitVuex
+                //   console.log("dataMap",This.dataMap)
                 }
             }).catch((err)=>{
                console.log(err)
@@ -205,23 +208,24 @@
             return strFormat
           }, // 获得请求数据
           getDevice(data){
-            console.log("getDevice",data);
+           // console.log("getDevice",data);
             this.getPanelItem(data)
             this.controlForms.devEui = data;
             // 初始化当前tab
-            console.log("在获得panel之后",this.sensorPanel)
-            console.log("获得设备",this.nowTabObj);
+          //  console.log("在获得panel之后",this.sensorPanel)
+          //  console.log("获得设备",this.nowTabObj);
 
-            console.log("准备好了吗",this.isReady());
+           // console.log("准备好了吗",this.isReady());
             if (this.isReady()) {
               this.getTabelData()
             }
           }, //获得传感器数据
           changeTabs(tab){
-            console.log("in change tabs")
+          //  console.log("in change tabs")
             this.nowTabs = tab.name;
             const nowValue = this.sensorPanel.filter((panel)=>panel.name==tab.name )
             if (nowValue.length != 0) this.nowTabObj = nowValue[0] // 获取当前的tab
+            this.commitVuex(); // 提交commit数据
             if (this.isReady()) {
               this.getTabelData()
             }
@@ -235,7 +239,17 @@
               }
             }))
           }, // 转换成json
+          dataCompare(obj1,obj2){
+              return obj1.date > obj2.date
+          },
+          commitVuex(){  // 向vuex中提交数据, 一旦数据变更，则提交数据
 
+         //   console.log("提交数据")
+            store.commit('SET_SENSORNAME', this.nowTabObj.label )  // 当前的传感器名称
+        //    console.log("in history data", this.dataMap[this.nowTabObj.name])
+            store.commit('SET_SENSORDATA',  this.dataMap[this.nowTabObj.name])  // 当前的数据
+            store.dispatch('setDeviceEui', this.controlForms.devEui) // 设置当前的devEui
+          }
 
         }
 

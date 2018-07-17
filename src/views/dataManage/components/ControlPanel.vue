@@ -3,9 +3,9 @@
     <div slot="header" class="clearfix">
       <span>控制中心</span>
     </div>
-    <el-form :model="controlForm" label-width="100px">
+    <el-form :model="controlForm" label-width="100px" >
       <el-form-item label="选择设备" >
-        <el-select v-model="controlForm.region" placeholder="请选择活动区域" value="请选择活动区域" @change="getDevice">
+        <el-select v-model="controlForm.region"  placeholder="请选择传感器" value="请选择传感器区域" @change="getDevice">
           <el-option v-for="item in selectItem" :label="item.label" :value="item.value" :key="item.value"></el-option>
          <!-- <el-option label="设备2" value="beijing"></el-option>-->
         </el-select>
@@ -47,6 +47,7 @@
 <script>
 
   import request from '@/utils/request'
+  import store  from '../../../store'
   export default {
     name: "ControlPanel",
     props:{
@@ -126,9 +127,13 @@
               devInfo.value = obj.devEUI
               This.demoSelectItem.push(devInfo)
             })
+            this.commitVuex(devTable)  // 提交设备列表
           }
         })
       },
+      commitVuex(list){
+        store.commit('SET_DEVNAMELIST',list)
+      }
 
     },
     mounted(){

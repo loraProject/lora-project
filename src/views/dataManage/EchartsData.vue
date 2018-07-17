@@ -1,14 +1,21 @@
 <template>
 
   <div class="EchartData">
-    <h1>用来展示过去一天历史数据图表</h1>
+    <h1>{{this.devName}}</h1>
+    <h1>{{this.sensorName}}</h1>
     <div id="alldata1" style="width: 1000px; height:500px;"></div>
+    <el-button type="primary" v-on:click="getdata">
+    </el-button>
+    <el-button @click="printData">显示数据</el-button>
   </div>
 </template>
 
 <script>
   import echarts from 'echarts'
+  import { mapGetters } from 'vuex' // 引入全局vuex的mapGetters
   import Vue from 'vue';
+  import  request from '@/utils/request'
+  import  store from '../../store'
   Vue.prototype.$echarts=echarts
     export default {
         name: "EchartsData",
@@ -143,8 +150,16 @@
         mounted(){
           this.showdata()
         },
+      computed:{   // 添加computed,从vuex中获取数据
+        ...mapGetters([
+            'devName',
+            'sensorName',
+            'sensorValue',
+            'dateValue'
+        ])
+      },
       methods:{
-          showdata:function () {
+        showdata:function () {
             let allchart =this.$echarts.init(document.getElementById('alldata1'))
             this.optionData.xAxis[0].data=this.numberx
             allchart.setOption(this.optionData)
@@ -156,7 +171,27 @@
                 { name:'平均温度', data:this.number3},
                 { name:'溶解氧', data:this.number4}]
             });
-          }
+          },
+        getdata:function () {
+          request({
+            methods:'post',
+            url:'/user/device/sensor/data/getdatabydate',
+            /*params:{
+
+            }*/
+          }).then(data=>{
+            console.log(data.data);
+          })
+
+        },
+        printData(){
+          console.log(this.devName)
+          console.log(this.sensorName)
+          console.log(this.sensorValue)
+          console.log(this.dateValue)
+          console.log(store.state.sensorData.devName)
+        }
+
       }
     }
 </script>
