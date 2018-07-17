@@ -29,11 +29,12 @@
           <h2>暂无传感器</h2>
         </el-card>
       </template>
+    </el-col>
+          <el-col :lg="10" :xl="10" :md="12" :xs="24">
+            <control-panel :change-date-function="getChangeDate" :export-sheet="exportsheet" :get-device="getDevice" ></control-panel>
+            <pie></pie>
+          </el-col>
 
-    </el-col>
-    <el-col :lg="10" :xl="10" :md="12" :xs="24">
-      <control-panel :change-date-function="getChangeDate" :export-sheet="exportsheet" :get-device="getDevice" ></control-panel>
-    </el-col>
   </el-row>
 
 </div>
@@ -45,11 +46,15 @@
   import DataTable from "./components/dataTable"
   import 'element-ui/lib/theme-chalk/base.css';
   import request from '@/utils/request'
+  import pie from './components/pie'
   import {param} from "../../utils";
+  import ElRow from "element-ui/packages/row/src/row";
 
     export default {
         name: "HistoryData",
-        components:{ControlPanel, DataTable},
+        components:{
+          ElRow,
+          ControlPanel, DataTable,pie},
         mounted(){
           //初始化
           for (let i= 0; i < 30; i++){

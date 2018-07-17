@@ -3,7 +3,7 @@
     <h1>设备列表</h1>
     <div class="elcard">
     <!--<el-row type="flex" justify="center">-->
-      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList">
+      <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList":key="dev.devEUI">
         <el-card class="elcard" >
           设备名：{{dev.devname}}
           <hr>
@@ -11,7 +11,7 @@
           <hr>
           设备维度：{{dev.latitude}}
           <hr>
-         设备经度：{{dev.longitude}}
+          设备经度：{{dev.longitude}}
           <hr>
           设备地址：{{dev.address}}
         </el-card>
@@ -87,6 +87,7 @@
 }
   .elcard{
     margin: 40px;
+    background-color: rgba(77, 225, 160, 0.31);
 
   }
 </style>
