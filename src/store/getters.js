@@ -13,6 +13,10 @@ const getters = {
   setting: state => state.user.setting,
   permission_routers: state => state.permission.routers,
   addRouters: state => state.permission.addRouters,
+  devName: state=>state.sensorData.devName,  // 设备名称
+  sensorName: state=>state.sensorData.sensorName,  // 数据类型
+  sensorValue: state=>state.sensorData.sensorValue, //纵轴数据
+  dateValue: state=>state.sensorData.dateValue,  // 横轴数据
   errorLogs: state => state.errorLog.logs
 }
 export default getters

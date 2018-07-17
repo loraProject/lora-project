@@ -230,7 +230,7 @@
         this.nowtime=new Date()
        // console.log(this.nowtime)
         this.valueline = this.valueline +Math.random()*21 - 10;
-       // console.log(this.valueline)
+      //  console.log(this.valueline)
         return {
           //name:this.nowline.toString(),
           name:this.nowtime.toString(),

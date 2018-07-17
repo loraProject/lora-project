@@ -1,7 +1,7 @@
 <template>
   <div class="pie" >
     <el-card >
-  <div id="alldata1" style=" height:150px;"></div>
+  <div id="alldata2" style=" height:150px;"></div>
     </el-card>
   </div>
 </template>
@@ -59,7 +59,7 @@
       },
       methods:{
           showpie:function () {
-            let allchart =this.$echarts.init(document.getElementById('alldata1'))
+            let allchart =this.$echarts.init(document.getElementById('alldata2'))
             allchart.setOption(this.option)
             allchart.setOption({ //加载数据图表
               legend: {
