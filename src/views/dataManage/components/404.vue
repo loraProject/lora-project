@@ -1,7 +1,7 @@
 <template>
   <div class="errPage-container">
     <el-row>
-      <el-col :span="12">
+      <el-col :span="10">
         <h1 class="text-jumbo text-ginormous">Oops!</h1>
         <h2>你还没有传感器</h2>
         <h6>请购买我们的产品</h6>
@@ -14,7 +14,7 @@
    <!--       <li><a @click.prevent="dialogVisible=true" href="#">点我看图</a></li>-->
         </ul>
       </el-col>
-      <el-col :span="12">
+      <el-col :span="14">
         <img :src="errGif" width="313" height="428" alt="Girl has dropped her ice cream.">
       </el-col>
     </el-row>

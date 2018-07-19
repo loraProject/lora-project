@@ -1,7 +1,7 @@
 <template>
   <div class="pie" >
     <el-card >
-  <div id="alldata2" style=" height:150px;"></div>
+  <div id="alldata1" style=" height:250px;"></div>
     </el-card>
   </div>
 </template>
@@ -9,6 +9,8 @@
 <script>
   import echarts from 'echarts'
   import Vue from 'vue';
+  import  request from '@/utils/request'
+
   Vue.prototype.$echarts=echarts
     export default {
         name: "pie",
@@ -16,7 +18,7 @@
           return{
             option : {
               title : {
-                text: '设备对应的传感器',
+                text: '传感器分布',
                 x:'center'
               },
               tooltip : {
@@ -30,11 +32,11 @@
               },
               series : [
                 {
-                  name: '访问来源',
+                  name: '传感器数量',
                   type: 'pie',
-                  radius : '55%',
-                  center: ['50%', '60%'],
-                  data:this.sensor1,
+                  radius : '66%',
+                  center: ['55%', '60%'],
+                  data:"12313",
                   itemStyle: {
                     emphasis: {
                       shadowBlur: 10,
@@ -42,24 +44,55 @@
                       shadowColor: 'rgba(0, 0, 0, 0.5)'
                     }
                   },
-                }
+                  label: {
+                    normal: {
+                      show: true
+                    },
+                    emphasis: {
+                      show: true
+                    }
+                  },
+                },
+
               ]
             },
             dename:['直接访问','邮件营销','联盟广告','视频广告','搜索引擎'],
-            desensor:[      {value:335, name:'直接访问'},
-              {value:310, name:'邮件营销'},
-              {value:234, name:'联盟广告'},
-              {value:135, name:'视频广告'},
-              {value:1548, name:'搜索引擎'}]
+            desensor:[
+              {value:100, name:'直接访问'},
+              {value:100, name:'邮件营销'},
+              {value:100, name:'联盟广告'},
+              {value:100, name:'视频广告'},
+              {value:100, name:'搜索引擎'}]
           }
       },
       props:['dev','sensor1'],
       mounted(){
-          this.showpie()
+        request.get('/user/getDSList').then((response)=>{
+          const res = response.data;
+          const data = res.data;
+          const This = this;
+          if (res.code == 1){ // 获得数据成功
+            console.log(data.desensor)
+            This.dename = data.dename;
+            This.desensor = data.desensor;
+            this.showpie()// 请求到数据之后再将数据放入数组中
+          }else {
+            This.$message(res.info);//数据
+          }
+
+        }).catch((err)=>{
+          console.log("in pie err", err);
+        })
+
       },
+      created(){
+
+      },
+
       methods:{
           showpie:function () {
-            let allchart =this.$echarts.init(document.getElementById('alldata2'))
+            let allchart =this.$echarts.init(document.getElementById('alldata1'));
+
             allchart.setOption(this.option)
             allchart.setOption({ //加载数据图表
               legend: {
@@ -67,12 +100,14 @@
               },
               series: {
                 data:this.desensor
-              }/*{
-                // 根据名字对应到相应的系列
-                name: ['数量'],
-                data: nums
-              }*/
+              }
             });
+          },
+          getDename(){  // 获得用户的设备列表
+
+          },
+          getDesensor(){  //获得用户不同设备下的数量
+
           }
       }
     }
