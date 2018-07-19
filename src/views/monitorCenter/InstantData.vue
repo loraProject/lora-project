@@ -16,7 +16,7 @@
         </el-row>
       </el-card>
 
-    <el-tabs type="border-card">
+  <!--  <el-tabs type="border-card">
           <template v-for="n in 1">
               <el-tab-pane label="风速">
                 <div id="" style="width: 1000px; height:500px;"></div>
@@ -32,11 +32,10 @@
               </el-tab-pane>
           </template>
 
-    </el-tabs>
+    </el-tabs>-->
     <el-tabs type="border-card"  @tab-click="printlog">
       <template v-for="item in sensorList">
         <el-tab-pane :label="item.name" >
-          {{item}}
             <el-row type="flex" justify="center">
               <el-tag class="eltag">传感器类型：{{item.label}} ({{item.name}})</el-tag>
               <el-tag class="eltag">传感器名称：{{item.typename}}</el-tag>
@@ -44,8 +43,11 @@
             </el-row>
         </el-tab-pane>
       </template>
-      <div id="Temperature" style="width: 1000px; height:500px;">图表</div>
-
+      <el-row type="flex" justify="center">
+        <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
+          <div id="Temperature" style="width: 1000px; height:500px;">图表</div>
+        </el-col>
+      </el-row>
     </el-tabs>
 
   </div>
@@ -59,9 +61,10 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
+  require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
-
+  var drawflag=""
   Vue.prototype.$echarts=echarts
   export default {
     components: {
@@ -83,107 +86,13 @@
         value:"",
         weburl:"ws://192.168.1.118:8090/websocket/",
         webtmpurl:"",
-      /*  nowline :+new Date(2018,1,1),
-        nowtime:new Date(),
-        oneday:24*3600*1000,*/
-
         //token
         token:getToken(),
         /* 实时显示表*/
-     /*   lineOption:{
-          title:{
-            text:'lineTemperature'
-          },
-          tooltip:{
-            trigger:'axis',
-            formatter:function (params) {
-              params = params[0];
-              var showdate = new Date(params.name);
-              return showdate.getDate() + '/' + (showdate.getMonth() + 1) + '/' + showdate.getFullYear() + ' : ' + params.value[1];
-            },
-            axisPointer: {
-              animation: false
-            }
-          },
-          toolbox: {
-            show : true,
-            orient: 'horizontal',      // 布局方式，默认为水平布局，可选为：
-                                       // 'horizontal' ¦ 'vertical'
-            x: 'center',                // 水平安放位置，默认为全图右对齐，可选为：
-                                       // 'center' ¦ 'left' ¦ 'right'
-                                       // ¦ {number}（x坐标，单位px）
-            y: 'top',                  // 垂直安放位置，默认为全图顶端，可选为：
-                                       // 'top' ¦ 'bottom' ¦ 'center'
-                                       // ¦ {number}（y坐标，单位px）
-            color : ['#1e90ff','#22bb22','#4b0082','#d2691e'],
-            backgroundColor: 'rgba(0,0,0,0)', // 工具箱背景颜色
-            borderColor: '#ccc',       // 工具箱边框颜色
-            borderWidth: 0,            // 工具箱边框线宽，单位px，默认为0（无边框）
-            padding: 5,                // 工具箱内边距，单位px，默认各方向内边距为5，
-            showTitle: true,
-            feature : {
-              mark : {
-                show : true,
-                lineStyle : {
-                  width : 1,
-                  color : '#1e90ff',
-                  type : 'dashed'
-                }
-              },
-              magicType: {
-                show : true,
-                title : {
-                  line : '动态类型切换-折线图',
-                  bar : '动态类型切换-柱形图',
-                },
-                type : ['line', 'bar']
-              },
-              restore : {
-                show : true,
-                title : '还原',
-                color : 'black'
-              },
-              saveAsImage : {
-                show : true,
-                title : '保存为图片',
-                type : 'jpeg',
-                lang : ['点击本地保存']
-              },
-            }
-          },
-          calculable:true,
-          xAxis:{
-            type:'time',
-            splitLine:{
-              show:false
-            },
-          },
-          yAxis:{
-            type:"value",
-            boundaryGap:[0,'100%'],
-            splitLine:{
-              show:true
-            },
-          },
-          dataZoom:[
-            {
-              type:'slider',
-              start:10,
-              end:60
-            }
-          ],
-          series:[{
-            name:'数据',
-            type:'line',
-            showSymbol:false,
-            data:this.dataline,
-          }]
-        },*/
-        /*测试*/
         lineOptiontest:{
-          title: {
-            text: '测试'
-          },
+        /*  title: {
+            text: '传感器实时数据'
+          },*/
           tooltip: {
             trigger: 'axis',
             axisPointer: {
@@ -200,18 +109,18 @@
             type: 'value',
             boundaryGap: [0, '100%'],
             splitLine: {
-              show: false
+              show: true
             }
           },
           dataZoom:[
             {
               type:'slider',
-              start:10,
-              end:60
+              start:40,
+              end:90
             }
           ],
           series: [{
-            name: '模拟数据',
+            name: 'sensorData',
             type: 'line',
             showSymbol: true,
             hoverAnimation: false,
@@ -223,42 +132,41 @@
     }
     },
     mounted(){
-      this.showLineTemperature();
       this.getdevlist()
     },
     beforeDestroy(){
 
     },
     methods:{
-      showLineTemperature:function () {
-     /*   for (var i=0;i<1000;i++){
+     /* showLineTemperature:function () {
+     /!*   for (var i=0;i<1000;i++){
          // this.dataline.push(this.getdata())
          // this.datatest.push(this.getvalue())
          // console.log(this.dataline[i].value[1])
-        }*/
-        /*-------------------------------实时显示1----------------------*/
+        }*!/
+        /!*-------------------------------实时显示1----------------------*!/
         let linechart =this.$echarts.init(document.getElementById('lineTemperature'))
         linechart.setOption(this.lineOptiontest)
-        /*--------------------------------实时显示2--------------------*/
+        /!*--------------------------------实时显示2--------------------*!/
         let linechart2 =this.$echarts.init(document.getElementById('lineTemperature2'))
         linechart2.setOption(this.lineOptiontest)
 
-        /*-----------------------------------------------------------------------*/
+        /!*-----------------------------------------------------------------------*!/
 
         setInterval(() => {
-        /*  for (var i = 0; i < 5; i++) {
-        }*/
+        /!*  for (var i = 0; i < 5; i++) {
+        }*!/
             //data.shift();
           //  this.dataline.push(this.getdata());
             this.datatest.push(this.getvalue())
 
-          /*-------------------------------数据填入1-------------------------------*/
+          /!*-------------------------------数据填入1-------------------------------*!/
           linechart.setOption({
             series: [{
               data: this.datatest
             }]
           });
-          /*-------------------------------数据填入2-------------------------------*/
+          /!*-------------------------------数据填入2-------------------------------*!/
           linechart2.setOption({
             series: [{
               data: this.datatest
@@ -267,7 +175,7 @@
         },1000)
         //console.log(this.dataline)
 
-      },
+      },*/
  /*     getdata:function () {
         this.nowline = new Date(+this.nowline + this.oneday);
        // console.log(this.nowline)
@@ -283,7 +191,7 @@
           /!*获取数据*!/
         }
       },*/
-      getvalue:function () {
+ /*     getvalue:function () {
         this.nowtime=new Date()
        // console.log(this.nowtime)
         this.valueline = this.valueline +Math.random()*21 - 10;
@@ -295,14 +203,14 @@
             [this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':'),
             Math.round(this.valueline)
           ]
-          /*获取数据*/
+          /!*获取数据*!/
         }
 
-      },
+      },*/
       getData:function () {
 
        const  That=this
-        let charts =That.$echarts.init(document.getElementById('Temperature'))
+        let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(That.lineOptiontest)
         if('WebSocket' in window){
           console.log("ws://192.168.1.125:8090/websocket/"+this.webtmpurl)
@@ -333,11 +241,14 @@
          // allsensor.get("wind").push(data1.wind.value)
           //console.log(allsensor.get("wind"))
           console.log(allsensor)
-          That.alldata.push(That.fillData(data1.wind.value,data1.wind.time))
+         // That.alldata.push(That.fillData(data1.wind.value,data1.wind.time))
           //this.lineOptiontest.xAxis[0].data=allsensor.get("time")
           charts.setOption({
+            xAxis:[{
+              data:allsensor.get("date")
+            }],
             series: [{
-              data: That.alldata
+              data: allsensor.get(drawflag)
             }]
           });
 
@@ -387,10 +298,11 @@
             this.sensornum=this.sensorList.length
             console.log(this.sensorList)
             console.log(this.sensornum);
+            drawflag=this.sensorList[0].name
             for(var i=0;i<this.sensornum;i++){
               allsensor.set(this.sensorList[i].name,[]) // modify by liuyunxing
             }
-            allsensor.set('time',this.sensorline)
+            allsensor.set('date',[])
 
           }
 
@@ -415,6 +327,9 @@
       printlog:function (tab,e) {
         console.log(tab.index)
         console.log(tab.label)
+        drawflag=tab.label
+        let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
+        charts.setOption(this.lineOptiontest)
       },
       splitData:function (data) {
         for(var i=0;i<this.sensornum;i++)
@@ -425,10 +340,11 @@
           console.log(data[this.sensorList[i].name].value)
           console.log(allsensor)*/
           allsensor.get(this.sensorList[i].name).push(data[this.sensorList[i].name].value);
-          console.log(allsensor)
+
 
         }
-        allsensor.get("time").push(data[this.sensorList[i-1].name].time)
+        console.log(allsensor)
+        allsensor.get("date").push(data[this.sensorList[i-1].name].date)
       },
       fillData:function (datay,datax) {
       /*  this.nowtime=new Date()
@@ -443,7 +359,7 @@
           /*获取数据*/
         }
 
-      }
+      },
     }
   }
 </script>
