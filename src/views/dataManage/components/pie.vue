@@ -35,13 +35,21 @@
                   name: '传感器数量',
                   type: 'pie',
                   radius : '66%',
-                  center: ['50%', '60%'],
+                  center: ['55%', '60%'],
                   data:"12313",
                   itemStyle: {
                     emphasis: {
                       shadowBlur: 10,
                       shadowOffsetX: 0,
                       shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                  },
+                  label: {
+                    normal: {
+                      show: true
+                    },
+                    emphasis: {
+                      show: true
                     }
                   },
                 },
