@@ -3,17 +3,16 @@ import { Message } from 'element-ui'
 import store from '@/store'
 import { getToken } from '@/utils/auth'
 import {  MessageBox } from 'element-ui'
-
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://192.168.1.125:8090', // api的base_url
+  baseURL: 'http://192.168.1.118:8090', // api的base_url
   timeout: 5000 // request timeout
 })
 
 // request interceptor
 service.interceptors.request.use(config => {
   // Do something before request is sent
- /* config.headers['Content-Type'] ='application/x-www-form-urlencoded';*/
+
   if (store.getters.token) {
     // 让每个请求携带token-- ['X-Token']为自定义key 请根据实际情况自行修改
     config.headers['token'] = getToken()
