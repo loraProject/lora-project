@@ -11,14 +11,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/list': {
+/*      '/list': {
         target: 'http://localhost:8081',
         changeOrigin: true,
         secure: false,     //注意如果是https 一定要加这一句
         pathRewrite: {
           '^/list': ''
         }
-      }
+      }*/
     },
 
     // Various Dev Server settings

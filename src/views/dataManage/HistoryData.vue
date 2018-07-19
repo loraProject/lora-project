@@ -23,6 +23,7 @@
     </el-col>
     <el-col :lg="10" :xl="10" :md="12" :xs="24">
       <control-panel :change-date-function="getChangeDate" :export-sheet="exportsheet" :get-device="getDevice" ></control-panel>
+      <pie></pie>
     </el-col>
   </el-row>
 
@@ -37,12 +38,13 @@
   import request from '@/utils/request'
   import NotFound from  './components/404'
   import store from '../../store'  // 引入全局vuex
+  import pie from './components/pie'
 
    /*为了改善阅读效果，当不改变控制面板时不重新请求数据，只有当改变控制面板使重新请求数据*/
     export default {
 
         name: "HistoryData",
-        components:{ControlPanel, DataTable, NotFound},
+        components:{ControlPanel, DataTable, NotFound, pie},
         mounted(){
           //初始化
 
@@ -240,7 +242,7 @@
             }))
           }, // 转换成json
           dataCompare(obj1,obj2){
-              return obj1.date > obj2.date
+              return obj1.date - obj2.date
           },
           commitVuex(){  // 向vuex中提交数据, 一旦数据变更，则提交数据
 

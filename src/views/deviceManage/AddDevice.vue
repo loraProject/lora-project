@@ -17,7 +17,7 @@
                <el-input placeholder="请输入设备地址" v-model="devAddress">
                </el-input>
               </el-form-item>
-              <el-row style="width: 30%">
+              <el-row style="width: 35%">
                 <el-form-item label="经度" >
                   <el-input  v-model="devLongitude" >
                   </el-input>
@@ -37,8 +37,10 @@
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="8">
-            <div id="allmap1" style="height: 550px" class="bgc">
+            <el-card class="bgc">
+            <div id="allmap1" style="height: 520px" >
             </div>
+            </el-card>
           </el-col>
         </el-row>
   </div>
