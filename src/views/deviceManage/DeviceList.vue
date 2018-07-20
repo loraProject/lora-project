@@ -1,6 +1,5 @@
 <template>
   <div class="DeviceList">
-    <h1>设备列表</h1>
     <div class="elcard">
     <!--<el-row type="flex" justify="center">-->
       <el-col :xs="20" :sm="16" :md="12" :lg="8" :xl="6" v-for="dev of devList":key="dev.devEUI">
