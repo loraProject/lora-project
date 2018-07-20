@@ -16,23 +16,6 @@
         </el-row>
       </el-card>
 
-  <!--  <el-tabs type="border-card">
-          <template v-for="n in 1">
-              <el-tab-pane label="风速">
-                <div id="" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="温度" >
-                <div id="lineTemperature" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="氨气">
-                <div id="lineTemperature2" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="湿度">
-                <div id="lineTemperature3" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-          </template>
-
-    </el-tabs>-->
     <el-tabs type="border-card"  @tab-click="printlog">
       <template v-for="item in sensorList">
         <el-tab-pane :label="item.name" >
@@ -61,6 +44,7 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
+  import $ from 'jquery'
   require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
@@ -84,7 +68,7 @@
         allDevList:[],
         sensorList:[],
         value:"",
-        weburl:"ws://192.168.1.118:8090/websocket/",
+        weburl:"ws://localhost:8090/websocket/",
         webtmpurl:"",
         //token
         token:getToken(),
@@ -134,86 +118,19 @@
     mounted(){
       this.getdevlist()
     },
-    beforeDestroy(){
+    destroyed(){
+      this.closeWebSocket()
+    },
+    destroyed(){
 
     },
     methods:{
-     /* showLineTemperature:function () {
-     /!*   for (var i=0;i<1000;i++){
-         // this.dataline.push(this.getdata())
-         // this.datatest.push(this.getvalue())
-         // console.log(this.dataline[i].value[1])
-        }*!/
-        /!*-------------------------------实时显示1----------------------*!/
-        let linechart =this.$echarts.init(document.getElementById('lineTemperature'))
-        linechart.setOption(this.lineOptiontest)
-        /!*--------------------------------实时显示2--------------------*!/
-        let linechart2 =this.$echarts.init(document.getElementById('lineTemperature2'))
-        linechart2.setOption(this.lineOptiontest)
-
-        /!*-----------------------------------------------------------------------*!/
-
-        setInterval(() => {
-        /!*  for (var i = 0; i < 5; i++) {
-        }*!/
-            //data.shift();
-          //  this.dataline.push(this.getdata());
-            this.datatest.push(this.getvalue())
-
-          /!*-------------------------------数据填入1-------------------------------*!/
-          linechart.setOption({
-            series: [{
-              data: this.datatest
-            }]
-          });
-          /!*-------------------------------数据填入2-------------------------------*!/
-          linechart2.setOption({
-            series: [{
-              data: this.datatest
-            }]
-          });
-        },1000)
-        //console.log(this.dataline)
-
-      },*/
- /*     getdata:function () {
-        this.nowline = new Date(+this.nowline + this.oneday);
-       // console.log(this.nowline)
-        this.valueline = this.valueline +Math.random()*21 - 10;
-     //   console.log(this.valueline)
-        return {
-          //name:this.nowline.toString(),
-          name:this.nowline.toString(),
-          value:[
-            [this.nowline.getFullYear(), this.nowline.getMonth() + 1, this.nowline.getDate()].join('/'),
-            Math.round(this.valueline)
-          ]
-          /!*获取数据*!/
-        }
-      },*/
- /*     getvalue:function () {
-        this.nowtime=new Date()
-       // console.log(this.nowtime)
-        this.valueline = this.valueline +Math.random()*21 - 10;
-      //  console.log(this.valueline)
-        return {
-          //name:this.nowline.toString(),
-          name:this.nowtime.toString(),
-          value: [
-            [this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':'),
-            Math.round(this.valueline)
-          ]
-          /!*获取数据*!/
-        }
-
-      },*/
       getData:function () {
 
        const  That=this
         let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(That.lineOptiontest)
         if('WebSocket' in window){
-          console.log("ws://192.168.1.125:8090/websocket/"+this.webtmpurl)
           websocket = new WebSocket(this.webtmpurl+this.token);
 
           //charts.setOption(this.lineOptiontest)
@@ -231,18 +148,12 @@
 
         //接收到消息的回调方法
         websocket.onmessage = function(event){
-
-         // console.log(That.alldata)
-          //That.alldata.push(event.data)
-          //var splitdata=That.splitData(event.data)
-          //console.log(JSON.parse(event.data))
+          if ( !That.isJSON(event.data) ){ // 如果此时返回的数据不是json串
+            console.log("后台发来消息： " + event.data)
+            return;
+          }
           var data1=JSON.parse(event.data)
           That.splitData(data1)
-         // allsensor.get("wind").push(data1.wind.value)
-          //console.log(allsensor.get("wind"))
-          console.log(allsensor)
-         // That.alldata.push(That.fillData(data1.wind.value,data1.wind.time))
-          //this.lineOptiontest.xAxis[0].data=allsensor.get("time")
           charts.setOption({
             xAxis:[{
               data:allsensor.get("date")
@@ -266,7 +177,20 @@
           websocket.close();
         }
       },
+      isJSON(str) {
+        if (typeof str == 'string') { // 判断是否是json字符串
+          try {
+            JSON.parse(str);
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+        console.log('It is not a string!')
+      },
       closeWebSocket:function () {
+
+        console.log("关闭websocket")
         websocket.close()
       },
       getdevlist:function () {
@@ -279,7 +203,7 @@
         }).then(data=>{
           // console.log(data.data);
            this.allDevList=data.data;
-          console.log(this.allDevList)
+        //  console.log(this.allDevList)
         })
       },
       jointurl:function () {
@@ -296,8 +220,8 @@
           /*-------------------为空------------------判断-----------------*/
           else {
             this.sensornum=this.sensorList.length
-            console.log(this.sensorList)
-            console.log(this.sensornum);
+         //   console.log(this.sensorList)
+           // console.log(this.sensornum);
             drawflag=this.sensorList[0].name
             for(var i=0;i<this.sensornum;i++){
               allsensor.set(this.sensorList[i].name,[]) // modify by liuyunxing
@@ -318,15 +242,13 @@
         }
         else{
           this.closeWebSocket()
-          //console.log(this.value)
           this.webtmpurl = this.weburl + this.value + "/"
-         // console.log(this.weburl)
           this.getData();
         }
       },
       printlog:function (tab,e) {
-        console.log(tab.index)
-        console.log(tab.label)
+       // console.log(tab.index)
+      //  console.log(tab.label)
         drawflag=tab.label
         let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(this.lineOptiontest)
@@ -334,21 +256,12 @@
       splitData:function (data) {
         for(var i=0;i<this.sensornum;i++)
         {
-          //console.log(data[this.sensorList[i]])
-          //console.log(this.sensornum)
-       /*   console.log(this.sensorList[i].name)
-          console.log(data[this.sensorList[i].name].value)
-          console.log(allsensor)*/
           allsensor.get(this.sensorList[i].name).push(data[this.sensorList[i].name].value);
-
-
         }
-        console.log(allsensor)
+       // console.log(allsensor)
         allsensor.get("date").push(data[this.sensorList[i-1].name].date)
       },
       fillData:function (datay,datax) {
-      /*  this.nowtime=new Date()
-        var datatest=Math.random()*10*/
         return {
           //name:this.nowtime.toString(),
           value: [

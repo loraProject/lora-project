@@ -21,7 +21,9 @@ const whiteList = ['/login', '/index', '/register']// no redirect whitelist
 var  ok = true;
 router.beforeEach((to, from, next)=> {
 
+  NProgress.start() // 进度条start
   if (getToken()){
+    //console.log("有token")
     if (to.path === '/login') { // 如果是指向登陆路径
       next({path:'/'})
       console.log("in login")
