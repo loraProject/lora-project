@@ -115,11 +115,40 @@ export const constantRouterMap = [
       meta: { title: '用户中心', icon: 'peoples', noCache: true }
     }]
   },
-  { path: '*', redirect: '/404', hidden: true }
+  { path: '*', redirect: '/404', hidden: true },
+  {
+    path: '/permission',
+    component: Layout,
+    redirect: '/permission/index',
+    alwaysShow: true, // will always show the root menu
+    meta: {
+      title: '权限管理',
+      icon: 'lock',
+      roles: ['admin'] // you can set roles in root nav
+    },
+    children: [{
+      path: 'page',
+      component: () => import('@/views/admin/RoleManage'),
+      name: '权限管理',
+      meta: {
+        title: '权限管理',
+        roles: ['admin'] // or you can only set roles in sub nav
+      }
+    }, {
+      path: 'userManage',
+      component: () => import('@/views/admin/UserManage'),
+      name: '用户管理',
+      meta: {
+        title: '用户管理',
+        roles: ['admin']
+        // if do not set roles, means: this page does not require permission
+      }
+    }]
+  }
 
 ]
 /* 有角色分别的权限路由*/
-export const asyncRouterMap = [  {
+export const asyncRouterMap = [ /* {
   path: '/permission',
   component: Layout,
   redirect: '/permission/index',
@@ -147,7 +176,7 @@ export const asyncRouterMap = [  {
       // if do not set roles, means: this page does not require permission
     }
   }]
-},]
+}*/]
 export default new Router({
 
   routes:constantRouterMap

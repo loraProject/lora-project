@@ -84,7 +84,7 @@
         allDevList:[],
         sensorList:[],
         value:"",
-        weburl:"ws://192.168.1.118:8090/websocket/",
+        weburl:"ws://192.168.1.120:8090/websocket/",
         webtmpurl:"",
         //token
         token:getToken(),
@@ -112,6 +112,13 @@
               show: true
             }
           },
+          toolbox: {
+            feature: {
+              dataView: {show: true, readOnly: false},
+              restore: {show: true},
+              saveAsImage: {show: true}
+            }
+          },
           dataZoom:[
             {
               type:'slider',
@@ -135,78 +142,9 @@
       this.getdevlist()
     },
     beforeDestroy(){
-
+      this.closeWebSocket()
     },
     methods:{
-     /* showLineTemperature:function () {
-     /!*   for (var i=0;i<1000;i++){
-         // this.dataline.push(this.getdata())
-         // this.datatest.push(this.getvalue())
-         // console.log(this.dataline[i].value[1])
-        }*!/
-        /!*-------------------------------实时显示1----------------------*!/
-        let linechart =this.$echarts.init(document.getElementById('lineTemperature'))
-        linechart.setOption(this.lineOptiontest)
-        /!*--------------------------------实时显示2--------------------*!/
-        let linechart2 =this.$echarts.init(document.getElementById('lineTemperature2'))
-        linechart2.setOption(this.lineOptiontest)
-
-        /!*-----------------------------------------------------------------------*!/
-
-        setInterval(() => {
-        /!*  for (var i = 0; i < 5; i++) {
-        }*!/
-            //data.shift();
-          //  this.dataline.push(this.getdata());
-            this.datatest.push(this.getvalue())
-
-          /!*-------------------------------数据填入1-------------------------------*!/
-          linechart.setOption({
-            series: [{
-              data: this.datatest
-            }]
-          });
-          /!*-------------------------------数据填入2-------------------------------*!/
-          linechart2.setOption({
-            series: [{
-              data: this.datatest
-            }]
-          });
-        },1000)
-        //console.log(this.dataline)
-
-      },*/
- /*     getdata:function () {
-        this.nowline = new Date(+this.nowline + this.oneday);
-       // console.log(this.nowline)
-        this.valueline = this.valueline +Math.random()*21 - 10;
-     //   console.log(this.valueline)
-        return {
-          //name:this.nowline.toString(),
-          name:this.nowline.toString(),
-          value:[
-            [this.nowline.getFullYear(), this.nowline.getMonth() + 1, this.nowline.getDate()].join('/'),
-            Math.round(this.valueline)
-          ]
-          /!*获取数据*!/
-        }
-      },*/
- /*     getvalue:function () {
-        this.nowtime=new Date()
-       // console.log(this.nowtime)
-        this.valueline = this.valueline +Math.random()*21 - 10;
-      //  console.log(this.valueline)
-        return {
-          //name:this.nowline.toString(),
-          name:this.nowtime.toString(),
-          value: [
-            [this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':'),
-            Math.round(this.valueline)
-          ]
-          /!*获取数据*!/
-        }
-
-      },*/
       getData:function () {
 
        const  That=this
@@ -346,20 +284,20 @@
         console.log(allsensor)
         allsensor.get("date").push(data[this.sensorList[i-1].name].date)
       },
-      fillData:function (datay,datax) {
-      /*  this.nowtime=new Date()
-        var datatest=Math.random()*10*/
+/*      fillData:function (datay,datax) {
+      /!*  this.nowtime=new Date()
+        var datatest=Math.random()*10*!/
         return {
           //name:this.nowtime.toString(),
           value: [
             datax
-            /*[this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':')*/,
+            /!*[this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':')*!/,
             datay
           ]
-          /*获取数据*/
+          /!*获取数据*!/
         }
 
-      },
+      },*/
     }
   }
 </script>
