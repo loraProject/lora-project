@@ -16,23 +16,6 @@
         </el-row>
       </el-card>
 
-  <!--  <el-tabs type="border-card">
-          <template v-for="n in 1">
-              <el-tab-pane label="风速">
-                <div id="" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="温度" >
-                <div id="lineTemperature" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="氨气">
-                <div id="lineTemperature2" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-              <el-tab-pane label="湿度">
-                <div id="lineTemperature3" style="width: 1000px; height:500px;"></div>
-              </el-tab-pane>
-          </template>
-
-    </el-tabs>-->
     <el-tabs type="border-card"  @tab-click="printlog">
       <template v-for="item in sensorList">
         <el-tab-pane :label="item.name" >
@@ -61,6 +44,7 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
+  import $ from 'jquery'
   require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
@@ -151,7 +135,6 @@
         let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(That.lineOptiontest)
         if('WebSocket' in window){
-          console.log("ws://192.168.1.125:8090/websocket/"+this.webtmpurl)
           websocket = new WebSocket(this.webtmpurl+this.token);
 
           //charts.setOption(this.lineOptiontest)
@@ -169,18 +152,12 @@
 
         //接收到消息的回调方法
         websocket.onmessage = function(event){
-
-         // console.log(That.alldata)
-          //That.alldata.push(event.data)
-          //var splitdata=That.splitData(event.data)
-          //console.log(JSON.parse(event.data))
+          if ( !That.isJSON(event.data) ){ // 如果此时返回的数据不是json串
+            console.log("后台发来消息： " + event.data)
+            return;
+          }
           var data1=JSON.parse(event.data)
           That.splitData(data1)
-         // allsensor.get("wind").push(data1.wind.value)
-          //console.log(allsensor.get("wind"))
-          console.log(allsensor)
-         // That.alldata.push(That.fillData(data1.wind.value,data1.wind.time))
-          //this.lineOptiontest.xAxis[0].data=allsensor.get("time")
           charts.setOption({
             xAxis:[{
               data:allsensor.get("date")
@@ -204,7 +181,20 @@
           websocket.close();
         }
       },
+      isJSON(str) {
+        if (typeof str === 'string') { // 判断是否是json字符串
+          try {
+            JSON.parse(str);
+            return true;
+          } catch (e) {
+            return false;
+          }
+        }
+        console.log('It is not a string!')
+      },
       closeWebSocket:function () {
+
+        console.log("关闭websocket")
         websocket.close()
       },
       getdevlist:function () {
@@ -217,7 +207,7 @@
         }).then(data=>{
           // console.log(data.data);
            this.allDevList=data.data;
-          console.log(this.allDevList)
+        //  console.log(this.allDevList)
         })
       },
       jointurl:function () {
@@ -234,8 +224,8 @@
           /*-------------------为空------------------判断-----------------*/
           else {
             this.sensornum=this.sensorList.length
-            console.log(this.sensorList)
-            console.log(this.sensornum);
+         //   console.log(this.sensorList)
+           // console.log(this.sensornum);
             drawflag=this.sensorList[0].name
             for(var i=0;i<this.sensornum;i++){
               allsensor.set(this.sensorList[i].name,[]) // modify by liuyunxing
@@ -256,15 +246,13 @@
         }
         else{
           this.closeWebSocket()
-          //console.log(this.value)
           this.webtmpurl = this.weburl + this.value + "/"
-         // console.log(this.weburl)
           this.getData();
         }
       },
       printlog:function (tab,e) {
-        console.log(tab.index)
-        console.log(tab.label)
+       // console.log(tab.index)
+      //  console.log(tab.label)
         drawflag=tab.label
         let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(this.lineOptiontest)
@@ -272,32 +260,23 @@
       splitData:function (data) {
         for(var i=0;i<this.sensornum;i++)
         {
-          //console.log(data[this.sensorList[i]])
-          //console.log(this.sensornum)
-       /*   console.log(this.sensorList[i].name)
-          console.log(data[this.sensorList[i].name].value)
-          console.log(allsensor)*/
           allsensor.get(this.sensorList[i].name).push(data[this.sensorList[i].name].value);
-
-
         }
-        console.log(allsensor)
+       // console.log(allsensor)
         allsensor.get("date").push(data[this.sensorList[i-1].name].date)
       },
-/*      fillData:function (datay,datax) {
-      /!*  this.nowtime=new Date()
-        var datatest=Math.random()*10*!/
+      fillData:function (datay,datax) {
         return {
           //name:this.nowtime.toString(),
           value: [
             datax
-            /!*[this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':')*!/,
+            /*[this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':')*/,
             datay
           ]
-          /!*获取数据*!/
+          /*获取数据*/
         }
 
-      },*/
+      },
     }
   }
 </script>

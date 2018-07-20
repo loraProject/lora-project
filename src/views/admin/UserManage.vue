@@ -124,12 +124,12 @@
                 value:"admin"
               },
               {
-                label:"审校者",
+                label:"超级管理员",
                 value:"editor"
               },
               {
-                label:"游客",
-                value:"visitor"
+                label:"youk",
+                value:"editor"
               }
             ]
           }
