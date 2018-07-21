@@ -14,11 +14,11 @@
       </el-col>
       <el-col :span="16"style="height: 600px">
         <div >
-          <img class="emptyGif" :src="emptyGif">
+         <!-- <img class="emptyGif" :src="emptyGif">-->
+          <tempreature/>
         </div>
       </el-col>
     </el-row>
-
 
   </div>
 </template>
@@ -26,6 +26,8 @@
 <script>
     import ElCard from "element-ui/packages/card/src/main";
     import ElRow from "element-ui/packages/row/src/row";
+    import request from '@/utils/request'
+    import tempreature from './temp/temperatureDa'
     import { mapGetters } from 'vuex'
     export default {
       computed:{
@@ -36,7 +38,8 @@
       },
       components: {
         ElRow,
-        ElCard},
+        ElCard,
+      tempreature},
       name: "UserCenter",
         mounted(){
 /*        console.log(this.roles)
@@ -57,7 +60,7 @@
         return {
          /* emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'*/
           emptyGif:'../../../static/img/dog.gif',
-          userRole:'没有初始化'
+          userRole:'没有初始化',
 
         }
       },
@@ -112,7 +115,8 @@
               ctx.fillStyle = 'rgba(66, 186, 131, 1)';
               ctx.fillText(time+":"+mil, 105, 168);
             },40)
-          }
+          },
+
         }
     }
 
