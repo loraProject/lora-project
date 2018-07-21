@@ -34,13 +34,13 @@ export const constantRouterMap = [
       path: 'deviceMap',
       component: () => import('@/views/monitorCenter/DeviceMap'),
       name: 'DeviceMap',
-       meta: { title: '设备地图' }
+      meta: {title: '设备地图'}
     },
       {
         path: 'instantData',
         component: () => import('@/views/monitorCenter/InstantData'),
         name: 'InstantData',
-        meta: { title: '实时数据' }
+        meta: {title: '实时数据'}
       }]
   },
   {
@@ -54,13 +54,13 @@ export const constantRouterMap = [
       path: 'historyData',
       component: () => import('@/views/dataManage/HistoryData'),
       name: 'HistoryData',
-      meta: { title: '历史数据' }
+      meta: {title: '历史数据'}
     },
       {
         path: 'echartsData',
         component: () => import('@/views/dataManage/EchartsData'),
         name: 'EchartsData',
-        meta: { title: '图表' }
+        meta: {title: '图表'}
       }]
   },
 
@@ -75,13 +75,13 @@ export const constantRouterMap = [
       path: 'addDevice',
       component: () => import('@/views/deviceManage/AddDevice'),
       name: 'AddDevice',
-      meta: { title: '添加设备' }
+      meta: {title: '添加设备'}
     },
       {
         path: 'deviceList',
         component: () => import('@/views/deviceManage/DeviceList'),
         name: 'DeviceList',
-        meta: { title: '设备列表' }
+        meta: {title: '设备列表'}
       }]
   },
   {
@@ -95,13 +95,13 @@ export const constantRouterMap = [
       path: 'addTrigger',
       component: () => import('@/views/triggerManage/AddTrigger'),
       name: 'addTrigger',
-      meta: { title: '添加触发器' }
+      meta: {title: '添加触发器'}
     },
       {
         path: 'triggerList',
         component: () => import('@/views/triggerManage/Trigger'),
         name: 'TriggerList',
-        meta: { title: '触发器列表' }
+        meta: {title: '触发器列表'}
       }]
   },
   {
@@ -112,14 +112,13 @@ export const constantRouterMap = [
       path: 'index',
       component: () => import('@/views/userCenter/UserCenter'),
       name: 'userCenter',
-      meta: { title: '用户中心', icon: 'peoples', noCache: true }
+      meta: {title: '用户中心', icon: 'peoples', noCache: true}
     }]
   },
-  { path: '*', redirect: '/404', hidden: true }
 
 ]
 /* 有角色分别的权限路由*/
-export const asyncRouterMap = [  {
+export const asyncRouterMap = [{
   path: '/permission',
   component: Layout,
   redirect: '/permission/index',
@@ -147,8 +146,9 @@ export const asyncRouterMap = [  {
       // if do not set roles, means: this page does not require permission
     }
   }]
-},]
+  },
+  {path: '*', redirect: '/404', hidden: true}]
 export default new Router({
 
-  routes:constantRouterMap
+  routes: constantRouterMap
 })
