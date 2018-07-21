@@ -1,10 +1,14 @@
 <template>
     <!--<h1>添加设备。。简简单单一个不那么丑陋的表格就好了</h1>-->
   <div class="AddDevice">
-        <el-row type="flex" justify="center" class="registerContent">
-          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="8">
+        <el-row  class="registerContent" :gutter="12">
+          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="12" >
             <el-card class="bgc">
             <el-form label-position="left">
+              <el-form-item label="用户名">
+                <el-tag>{{addUserName}}</el-tag>
+              </el-form-item>
+
               <el-form-item label="设备名" >
                 <el-input placeholder="请输入设备名称" v-model="deviceName">
                 </el-input>
@@ -36,7 +40,7 @@
             </el-form>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="8">
+          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="12">
             <el-card class="bgc">
             <div id="allmap1" style="height: 520px" >
             </div>
@@ -56,6 +60,12 @@
         ElCard,
         ElRow},
       name: "AddDevice",
+      props:{
+        addUserName:{
+          type:String,
+          default:"default用户"
+        }
+      },
       data(){
         return{
           deviceName:"",
@@ -145,7 +155,6 @@
 <style scoped>
 .bgc{
   margin: 40px;
-  padding: 40px;
 }
   .AddDevice{
 /*    background-color:rgb(234, 239, 242);*/

@@ -5,8 +5,8 @@ import { getToken } from '@/utils/auth'
 import {  MessageBox } from 'element-ui'
 // create an axios instance
 const service = axios.create({
-  baseURL: 'http://localhost:8090', // api的base_url
-  timeout: 5000 // request timeout
+  baseURL: 'http://192.168.1.120:8090', // api的base_url
+  timeout: 500000 // request timeout
 })
 
 // request interceptor

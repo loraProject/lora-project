@@ -33,16 +33,16 @@
                 label="用户身份"
                 width="180">
               </el-table-column>
-              <el-table-column
+  <!--            <el-table-column
                 prop="password"
                 label="密码">
-              </el-table-column>
+              </el-table-column>-->
               <el-table-column
                 fixed="right"
                 label="操作"
-                width="100">
+                >
                 <template slot-scope="scope">
-                  <el-row >
+                  <el-row type="flex">
                     <el-col>
                       <!--@click="handleClick(scope.row)"-->
                        <el-button  type="text" size="small" @click=getUseridLimit(scope.row)>修改权限</el-button>
@@ -124,12 +124,12 @@
                 value:"admin"
               },
               {
-                label:"审校者",
+                label:"超级管理员",
                 value:"editor"
               },
               {
-                label:"游客",
-                value:"visitor"
+                label:"youk",
+                value:"editor"
               }
             ]
           }
