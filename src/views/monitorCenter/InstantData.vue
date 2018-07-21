@@ -16,6 +16,7 @@
         </el-row>
       </el-card>
 
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
   <!--  <el-tabs type="border-card">
           <template v-for="n in 1">
@@ -36,6 +37,8 @@
     </el-tabs>-->
 =======
 >>>>>>> .merge_file_a15900
+=======
+>>>>>>> .merge_file_a16360
     <el-tabs type="border-card"  @tab-click="printlog">
       <template v-for="item in sensorList">
         <el-tab-pane :label="item.name" >
@@ -64,10 +67,14 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
 =======
   import $ from 'jquery'
 >>>>>>> .merge_file_a15900
+=======
+  import $ from 'jquery'
+>>>>>>> .merge_file_a16360
   require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
@@ -148,6 +155,7 @@
 
     },
     methods:{
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
      /* showLineTemperature:function () {
      /!*   for (var i=0;i<1000;i++){
@@ -220,16 +228,21 @@
       },*/
 =======
 >>>>>>> .merge_file_a15900
+=======
+>>>>>>> .merge_file_a16360
       getData:function () {
 
        const  That=this
         let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(That.lineOptiontest)
         if('WebSocket' in window){
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
           console.log("ws://localhost:8090/websocket/"+this.webtmpurl)
 =======
 >>>>>>> .merge_file_a15900
+=======
+>>>>>>> .merge_file_a16360
           websocket = new WebSocket(this.webtmpurl+this.token);
 
           //charts.setOption(this.lineOptiontest)
@@ -253,6 +266,7 @@
           }
           var data1=JSON.parse(event.data)
           That.splitData(data1)
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
          // allsensor.get("wind").push(data1.wind.value)
           //console.log(allsensor.get("wind"))
@@ -261,6 +275,8 @@
           //this.lineOptiontest.xAxis[0].data=allsensor.get("time")
 =======
 >>>>>>> .merge_file_a15900
+=======
+>>>>>>> .merge_file_a16360
           charts.setOption({
             xAxis:[{
               data:allsensor.get("date")
@@ -327,6 +343,7 @@
           /*-------------------为空------------------判断-----------------*/
           else {
             this.sensornum=this.sensorList.length
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
             console.log(this.sensorList)
             console.log(this.sensornum);
@@ -334,6 +351,10 @@
          //   console.log(this.sensorList)
            // console.log(this.sensornum);
 >>>>>>> .merge_file_a15900
+=======
+         //   console.log(this.sensorList)
+           // console.log(this.sensornum);
+>>>>>>> .merge_file_a16360
             drawflag=this.sensorList[0].name
             for(var i=0;i<this.sensornum;i++){
               allsensor.set(this.sensorList[i].name,[]) // modify by liuyunxing
@@ -359,6 +380,7 @@
         }
       },
       printlog:function (tab,e) {
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
         console.log(tab.index)
         console.log(tab.label)
@@ -366,6 +388,10 @@
        // console.log(tab.index)
       //  console.log(tab.label)
 >>>>>>> .merge_file_a15900
+=======
+       // console.log(tab.index)
+      //  console.log(tab.label)
+>>>>>>> .merge_file_a16360
         drawflag=tab.label
         let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(this.lineOptiontest)
@@ -374,6 +400,7 @@
         for(var i=0;i<this.sensornum;i++)
         {
           allsensor.get(this.sensorList[i].name).push(data[this.sensorList[i].name].value);
+<<<<<<< .merge_file_a13196
 <<<<<<< .merge_file_a16380
 
 
@@ -383,6 +410,10 @@
         }
        // console.log(allsensor)
 >>>>>>> .merge_file_a15900
+=======
+        }
+       // console.log(allsensor)
+>>>>>>> .merge_file_a16360
         allsensor.get("date").push(data[this.sensorList[i-1].name].date)
       },
       fillData:function (datay,datax) {
