@@ -84,7 +84,7 @@
         allDevList:[],
         sensorList:[],
         value:"",
-        weburl:"ws://192.168.1.118:8090/websocket/",
+        weburl:"ws://localhost:8090/websocket/",
         webtmpurl:"",
         //token
         token:getToken(),
@@ -213,7 +213,7 @@
         let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(That.lineOptiontest)
         if('WebSocket' in window){
-          console.log("ws://192.168.1.125:8090/websocket/"+this.webtmpurl)
+          console.log("ws://localhost:8090/websocket/"+this.webtmpurl)
           websocket = new WebSocket(this.webtmpurl+this.token);
 
           //charts.setOption(this.lineOptiontest)
