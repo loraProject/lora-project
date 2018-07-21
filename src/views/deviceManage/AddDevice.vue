@@ -145,7 +145,6 @@
 <style scoped>
 .bgc{
   margin: 40px;
-  padding: 40px;
 }
   .AddDevice{
 /*    background-color:rgb(234, 239, 242);*/

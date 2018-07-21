@@ -7,13 +7,19 @@
     >
      <span class="custom-tree-node" slot-scope="{ node, data }">
        <el-row type="flex" :gutter="32" justify="space-around">
-        <el-col :xl="16" :lg="16" :md="16" :sm="16" :xs="12">
+        <el-col :xl="16" :lg="16" :md="16" :sm="16" :xs="16">
          <svg-icon :icon-class=data.icon class-name="card-panel-icon"></svg-icon>
-         <el-tag type="success" class="user-name-tag">{{node.label}}</el-tag>
+         <el-tag class="user-name-tag" v-if="data.type=='user'">用户名 :{{node.label}}</el-tag>
+           <el-tag class="user-name-tag" v-if="data.type=='sensor'" type="success">{{node.label}}</el-tag>
+            <el-tag class="user-name-tag" v-if="data.type=='control'" type="info">{{node.label}}</el-tag>
+           <el-tag class="user-name-tag" v-if="data.type=='device'" type="danger">{{node.label}}</el-tag>
+          <el-tag class="user-name-tag" v-if="needButton(data)" color="#0000">{{node.label}}</el-tag>
+            <el-tag class="user-name-tag" v-if="data.type=='controlDevice'" color="#0000">{{node.label}}</el-tag>
+          <!-- <span  v-if="needButton(data)">列表</span>-->
           <el-tag type="warning" v-if="data.type=='sensor'">{{data.ctype}}</el-tag>
           <el-tag type="danger" v-if="data.type=='control'">{{data.ctype}}</el-tag>
        </el-col>
-         <el-col :xl="8" :lg="8" :md="8" :sm="8" :xs="12">
+         <el-col :xl="3" :lg="8" :md="8" :sm="8" :xs="8">
            <span v-if="needControl(data)">
              <el-switch
                v-model=data.status
@@ -21,16 +27,16 @@
                inactive-color="#ff4949"
                @change="handelChange(data)"
 
-               >
+             >
           </el-switch>
            </span>
-          <span  class="operate-button">  <!--只有dir需要button-->
-          <el-button  v-if="needButton(data)"
-                      type="success"
-            size="mini"
-            @click="() => append(node,data)">
+          <span class="operate-button">  <!--只有dir需要button-->
+          <el-button v-if="needButton(data)"
+                     type="success"
+                     size="mini"
+                     @click="() => append(node,data)">
             添加
-          </el-button >
+          </el-button>
           <el-button
             v-if="data.type == 'device' ||data.type == 'sensor'"
             type="danger"
@@ -57,6 +63,10 @@
     <el-dialog title="添加设备" :visible.sync="dialogTableVisible" width="80%" center top="10vh">
       <add-device :add-user-name="parentName"></add-device>
     </el-dialog>
+
+    <el-dialog title="添加传感器" :visible.sync="sensorDialog" width=400px center top="10vh" > <!--// 根据屏幕进行选择-->
+      <add-sensor :add-user-name="parentName" :dev-eui="addDev.eui" :dev-name="addDev.name"></add-sensor>
+    </el-dialog>
   </div>
 </template>
 
@@ -64,18 +74,20 @@
 
   let id = 1000;
   import AddDevice from './AddDevice'
-  import request from  '@/utils/request'
+  import AddSensor from  './AddSensor'
+  import request from '@/utils/request'
+
   export default {
     name: "MyTree",
-    components: {AddDevice},
-    mounted(){
-      request.get('/user/getTreeUserInfo').then((response)=>{
+    components: {AddDevice, AddSensor},
+    mounted() {
+      request.get('/user/getTreeUserInfo').then((response) => {
         const res = response.data;
         const data = res.data;
-        if (res.code == 1){
+        if (res.code == 1) {
           this.data5 = data;
 
-        }else {
+        } else {
           this.$message(res.info, 'error')
         }
 
@@ -88,23 +100,34 @@
         data5: JSON.parse(JSON.stringify(data)),
         dialogTableVisible: false, //是否打开模态框,
         switchStatus: '',
-        parentName:"user"
+        sensorDialog:false,
+        parentName: "user",
+        addDev:{
+          name:'',
+          eui:''
+        },
+
       }
     },
     methods: {
-      append(node,data) {
+      append(node, data) {
         console.log("append node", node);
         console.log("append", node.parent.label);
-        this.dialogTableVisible = true;
-        const parent = node.parent;
-        this.parentName =  parent.data.label
-        this.parentName ;
-        // 使用ajax请求
-/*        const newChild = {id: id++, label: 'testtest', icon: 'bug', children: []};
-        if (!data.children) {
-          this.$set(data, 'children', []);
+        if (data.type == 'deviceDir') {
+          this.dialogTableVisible = true;
+          const parent = node.parent;
+          this.parentName = parent.data.label;
         }
-        data.children.push(newChild);*/
+        if (data.type == 'sensorDir') {
+          this.sensorDialog = true;
+          const parent = node.parent;
+          console.log(parent);
+          this.addDev.name = parent.data.label;
+          this.addDev.eui = parent.data.id;
+
+        }
+
+
       },
       handelChange(data) {
 
@@ -117,54 +140,30 @@
         const index = children.findIndex(d => d.id === data.id);
         children.splice(index, 1);
       },
-      getInfoByUser(data){
-        /* const newChild = {
-            id: 97,
-            label: '设备',
-            icon: 'device-entry',
-            children: [{
-              id: 100,
-              label: '设备1',
-              icon: 'device',
-              needButton: true,
-              children: [{
-                id: 101,
-                label: '传感器',
-                icon: 'sensor-entry',
-                children: [{
-                  id: 1001,
-                  label: '传感器1',
-                  icon: 'device-sensor',
-                  needButton: true,
-                  status: true,
-                  leaf: true
-                }]
-              }]
-            }]
-          };*/
+      getInfoByUser(data) {
         const This = this;
         if (data.type == 'user') { // 如果是user
-            //请求数据
-            data.loaded = true;
-            request.get("/user/getTreeDeviceInfo",{
-              params:{
-                aimUserId:data.label  // 请求label
+          //请求数据
+          data.loaded = true;
+          request.get("/user/getTreeDeviceInfo", {
+            params: {
+              aimUserId: data.label  // 请求label
+            }
+          }).then((request) => {
+            data.loaded = false;
+            const res = request.data;
+            const datas = res.data;
+            if (res.code == '1') { //请求成功
+              const newChild = datas;
+              if (!data.children) {
+                This.$set(data, 'children', [])
               }
-            }).then((request)=>{
-              data.loaded = false;
-              const res = request.data;
-              const datas = res.data;
-              if (res.code == '1'){ //请求成功
-                const newChild = datas;
-                if (!data.children) {
-                  This.$set(data, 'children', [])
-                }
-                data.children.push(newChild)
-                data.loading = true;
-              }else {
-                this.$message(res.info);
-              }
-            })
+              data.children.push(newChild)
+              data.loading = true;
+            } else {
+              this.$message(res.info);
+            }
+          })
 
         }
       },
@@ -172,12 +171,12 @@
 
 
       },
-      needButton(data){
-      //  console.log(data.type)
-         return data.type.indexOf("Dir") > 0
+      needButton(data) {
+        //  console.log(data.type)
+        return data.type.indexOf("Dir") > 0
       },
-      needControl(data){
-         return data.type == "sensor"  || data.type == "control"
+      needControl(data) {
+        return data.type == "sensor" || data.type == "control"
       }
     }
   }
@@ -198,7 +197,7 @@
 
       }
     }
-    span{
+    span {
       margin-left: 10px;
     }
   }
@@ -211,6 +210,7 @@
 <style lang="scss">
   .el-tree-node__content {
     height: 48px;
+    border-bottom: solid 0.5px rgba(225,225,225,0.5);
     line-height: 48px;
     width: 100%;
     .operate-button {

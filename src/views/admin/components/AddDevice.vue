@@ -2,11 +2,11 @@
     <!--<h1>添加设备。。简简单单一个不那么丑陋的表格就好了</h1>-->
   <div class="AddDevice">
         <el-row  class="registerContent" :gutter="12">
-          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="12" >
+          <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12" >
             <el-card class="bgc">
             <el-form label-position="left">
               <el-form-item label="用户名">
-                <el-tag>{{addUserName}}</el-tag>
+                <a class="card-user-name"><b>{{addUserName}}</b></a>
               </el-form-item>
 
               <el-form-item label="设备名" >
@@ -40,7 +40,7 @@
             </el-form>
             </el-card>
           </el-col>
-          <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="12">
+          <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
             <el-card class="bgc">
             <div id="allmap1" style="height: 520px" >
             </div>
@@ -64,6 +64,16 @@
         addUserName:{
           type:String,
           default:"default用户"
+        },
+        deviceForm:{
+          type:Object,
+          default:{
+            deviceName:'',
+            deviceEui:'',
+            devAddress:'',
+            devLongitude:'',
+            devDimensionality:''
+          }
         }
       },
       data(){
@@ -155,6 +165,10 @@
 <style scoped>
 .bgc{
   margin: 40px;
+}
+.card-user-name{
+  font-size: 30px;
+  color: #343739;
 }
   .AddDevice{
 /*    background-color:rgb(234, 239, 242);*/
