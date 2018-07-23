@@ -86,7 +86,7 @@
 }
   .elcard{
     margin: 40px;
-    background-color: rgba(77, 225, 160, 0.31);
-
+    background-image:url("../../../static/img/bgi.jpg");
+    background-size: 100% 100%;
   }
 </style>

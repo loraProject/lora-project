@@ -2,12 +2,15 @@
 <div class="Trigger">
   <el-header>
     <el-card class="cardm">
-      <el-select  placeholder="请选择设备" v-model="value" value="" @change="getSensorData">
+      <el-row type="flex" justify="left">
+        <el-col :xs="24" :sm="20" :md="20" :lg="18" :xl="10">
+         <el-select  placeholder="请选择设备" v-model="value" value="" @change="getSensorData">
      <!--   <el-option
           v-for="item in allDevList"
           :key="item.devEUI"
           :label="item.devname"
           :value="item.devEUI">-->
+
         <el-option
           v-for="item in allDevList"
           :key="item.devEUI"
@@ -15,6 +18,15 @@
           :value="item.devEUI">
         </el-option>
       </el-select>
+        </el-col>
+        <el-tooltip content="速率设置，如若设置速率，请先选择设备" placement="top" :disabled="!disabled">
+         <el-input-number v-model="num1" :min="8" :max="60" label="速率设置"> </el-input-number>
+        </el-tooltip>
+          <el-button v-bind:disabled="disabled" type="primary" style="margin-left: 5px" v-on:click="setRate">
+          速率设置
+         </el-button>
+
+      </el-row>
     </el-card>
   </el-header>
   <el-main >
@@ -37,6 +49,10 @@
               label="类型">
             </el-table-column>
             <el-table-column
+              prop="state"
+              label="状态">
+            </el-table-column>
+            <el-table-column
               fixed="right"
               label="操作"
               width="100">
@@ -49,12 +65,16 @@
         </el-col>
         <el-col :xs="20" :sm="16" :md="14" :lg="12" :xl="10">
           <el-table
-            :data="sensorList"
+            :data="triggerList"
             stripe
             height="400">
             <el-table-column
-              prop="name"
-              label="类型">
+              prop="relayName"
+              label="继电器名称">
+            </el-table-column>
+            <el-table-column
+              prop="relayType"
+              label="继电器类型">
             </el-table-column>
             <el-table-column
               fixed="right"
@@ -62,7 +82,8 @@
               width="100">
               <template slot-scope="scope">
                 <!--@click="handleClick(scope.row)"-->
-                <el-button  type="text" size="small" @click=printmsg2(scope.row)>修改状态</el-button>
+              <!--  <el-button  type="text" size="small" @click=printmsg2(scope.row)>修改状态</el-button>-->
+                <el-button  type="text" size="small" icon="el-icon-more" @click=printmsg3(scope.row) circle> </el-button>
               </template>
             </el-table-column>
           </el-table>
@@ -84,14 +105,62 @@
       </el-dialog>
 
       <el-dialog title="修改设备状态" :visible.sync="dialogVisible2">
-        更改状态为：  <el-select placeholder="请选择" value="" v-model="value2">
-        <el-option v-for="(item,index) in switchstatus2"
+      <!--  更改状态为：  <el-select placeholder="请选择" value="" v-model="value2">-->
+     <!--   <el-option v-for="(item,index) in switchstatus2"
                    :key="index"
                    :label="item.label"
                    :value="item.value2">
 
-        </el-option>
-      </el-select>
+        </el-option>-->
+        <el-table
+          :data="swtichStatus"
+          stripe
+          height="400"
+          v-loading="loadSwtich">
+          <el-table-column
+            prop="switchId"
+            label="开关Id">
+          </el-table-column>
+          <el-table-column
+            prop="switchName"
+            label="开关名称">
+          </el-table-column>
+          <el-table-column
+            prop="state"
+            label="开关状态">
+          </el-table-column>
+          <el-table-column label="操作">
+        <!--      更改状态为：  <el-select placeholder="请选择" value="" v-model="value2">
+               <el-option v-for="(item,index) in switchstatus2"
+                          :key="index"
+                          :label="item.label"
+                          :value="item.value2">
+
+               </el-option>
+             </el-select>-->
+              <template slot-scope="props" >
+              <!--  <el-select placeholder="请选择" value=" " v-model="value2">
+                  <el-option v-for="(item,index) in switchstatus2"
+                             :key="index"
+                             :label="item.label"
+                             :value="state">
+
+                  </el-option>
+                </el-select>-->
+                <el-switch
+                  v-model="props.row.state"
+                  :active-value=1
+                  :inactive-value=0
+                  active-color="#13ce66"
+                  inactive-color="#ff4949"
+                  active-text="开"
+                  inactive-text="关"
+                 @change="addSwitchSatus(props.row)">
+                </el-switch>
+              </template>
+          </el-table-column>
+        </el-table>
+<!--      </el-select>-->
         <div slot="footer" class="dialog-footer">
           <el-button @click="dialogVisible2 = false">取 消</el-button>
           <el-button type="primary" @click="modifyStatusDev">确 定</el-button>
@@ -107,10 +176,12 @@
     import ElMain from "element-ui/packages/main/src/main";
     import ElCard from "element-ui/packages/card/src/main";
     import  request from '@/utils/request';
+    import ElRow from "element-ui/packages/row/src/row";
 
     export default {
       name: "AddTrigger",
       components: {
+        ElRow,
         ElCard,
         ElMain,
         ElHeader},
@@ -119,13 +190,17 @@
           allDevList:[],
           sensorList:[],
           relayList:[],
+          triggerList:[],
+          swtichStatus:[],
           value:"",
           value1:"",
-          value2:"",
           devtypeid:"",
           loading:false,
+          loadSwtich:true,
           dialogVisible1:false,
           dialogVisible2:false,
+          num1:"",
+          disabled:true,
           switchstatus1:[{
               label:"开启设备",
               value1:"1"
@@ -133,13 +208,7 @@
             {  label:"关闭设备",
             value1:"0"
           }],
-          switchstatus2:[{
-            label:"开启设备",
-            value2:"1"
-          },
-            {  label:"关闭设备",
-              value2:"0"
-            }]
+          switchstatus2:[],
         }
      },
       mounted(){
@@ -153,22 +222,36 @@
           }).then(data=>{
             // console.log(data.data);
             this.allDevList=data.data;
-            console.log(this.allDevList)
+       /*     console.log(this.allDevList)*/
           })
          /* let param = new URLSearchParams()
           param.append('devEUI',this.value);
        */
         },
         getSensorData:function () {
+          this.disabled=false
+          /*--------------------------获取传感器列表-----------------------*/
           request.get('/user/devices/getDataSensor',{
             params:{
               devEUI:this.value
             }
           }).then(data=>{
-              console.log(this.value)
-              console.log(data.data.data)
+           /*   console.log(this.value)
+              console.log(data.data.data)*/
               this.sensorList=data.data.data
+              //console.log(this.sensorList)
            })
+          /* -------------------------------获取触发器列表---------------------------*/
+          request.get('/user/devices/getDataRelay',{
+            params:{
+              devEUI:this.value
+            }
+          }).then(data=>{
+           // console.log(this.value)
+           // console.log(data.data)
+            this.triggerList=data.data.data
+            //console.log(this.triggerList)
+          })
          },
          printmsg1:function (row) {
           console.log(row.name)
@@ -179,11 +262,35 @@
            this.value1=row.state
           this.dialogVisible1 = true
         },
-        printmsg2:function (row) {
+    /*    printmsg2:function (row) {
           console.log(row.name)
-          /*this.devid=row.name*/
-          /*------------------------------获取当前传感器的状态--------------------------*/
+          /!*this.devid=row.name*!/
           this.value2=row.state
+          this.dialogVisible2 = true
+        },*/
+        printmsg3:function (row) {
+          this.loadSwtich=true
+          console.log(row.relayType)
+          var typeid=row.relayType
+          /*this.devid=row.name*/
+          /*------------------------------获取当前触发器状态--------------------------*/
+          request.get('/user/devices/getRelaySwitch',{
+            params:{
+              devEUI:this.value,
+              relayType:typeid
+            }
+          }).then(data=>{
+            this.loadSwtich=false
+            this.$message({
+              type: 'info',
+              message: data.data.info
+            })
+            console.log(this.value)
+          /*  var tmp=JSON.stringify(data.data)
+            console.log(tmp)*/
+            this.swtichStatus=data.data.data
+            console.log(this.swtichStatus)
+          })
           this.dialogVisible2 = true
         },
          modifyStatusSen:function () {
@@ -194,29 +301,51 @@
              request.post('/user/devices/changesensor',param).then( this.loading=true).then(data=>{
 
                  this.loading=false
-                 console.log(data.data)
+               //  console.log(data.data)
              this.$message({
                     type: 'info',
                     message: data.data.info
                   })
+               this.getSensorData()
           })
           this.dialogVisible1 = false
            console.log(this.value1)
          },
+        addSwitchSatus:function (row) {
+          console.log(row.state)
+          console.log(row.switchId)
+        },
         modifyStatusDev:function () {
-          /*    let param = new URLSearchParams()
-              param.append('status',this.value1);
-              param.append('id',)
-              request.post('/',param).then(data=>{
+          var paramjson = {}
+          for(var i=0;i<this.swtichStatus.length;i++)
+          {
+            paramjson[this.swtichStatus[i].switchId]=String(this.swtichStatus[i].state)
+          }
+             let param = new URLSearchParams()
+              param.append('devEUI',this.value);
+              param.append('jsonstr',JSON.stringify(paramjson))
+              request.post('/user/devices/changeRelayMulSwitch',param).then(data=>{
              console.log(data.data)
              this.$message({
                     type: 'info',
                     message: data.data.info
                   })
-           })*/
+           })
+            console.log(paramjson)
           this.dialogVisible2 = false
-          console.log(this.value2)
-        }
+
+        },
+       setRate:function () {
+         console.log(this.num1)
+      /*      let param = new URLSearchParams()
+         param.append('devEUI',this.value);
+         param.append('rate',String(this.num1))
+         request.post('/user/devices/changeRelayMulSwitch',param).then(data=>{
+         this.$message({
+                    type: 'info',
+                    message: data.data.info
+                  })})*/
+       }
 
       }
 

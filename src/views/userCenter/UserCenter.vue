@@ -1,24 +1,39 @@
 <template>
   <div class="UserCenter">
   <!--  <h1>用户中心，展示用户信息</h1>-->
-    <el-row>
-      <el-col :span="8">
-
-          <canvas id="canvas" width="400" height="400" >cccc</canvas>
-          <h1 style="margin-left:80px ">
-            {{this.userRole}}
+       <el-row type="flex" justify="left">
+         <el-col :xs="14" :sm="12" :md="10" :lg="8" :xl="6">
+          <canvas id="canvas" width="400" height="300" >cccc</canvas>
+         </el-col>
+         <el-col :xs="14" :sm="12" :md="10" :lg="8" :xl="6">
+          <h1 style="margin-top:40px">
+            用户角色：{{this.userRole}}
           </h1>
-          <h3 style="margin-left:80px ">
+          <h3 style="margin-top:40px ">
            用户名称： {{this.name}}
           </h3>
-      </el-col>
-      <el-col :span="16"style="height: 600px">
-        <div >
-         <!-- <img class="emptyGif" :src="emptyGif">-->
-          <tempreature/>
-        </div>
-      </el-col>
+          <h3 style="margin-top:40px "> 城市：
+           <el-cascader
+             :options="options"
+             :show-all-levels="false"
+             value=""
+             v-model="value"
+           > </el-cascader>
+          </h3>
+        </el-col>
+         <el-col :xs="14" :sm="12" :md="10" :lg="8" :xl="6">
+         <img class="emptyGif" :src="emptyGif">
+       </el-col>
     </el-row>
+
+      <el-row>
+        <el-col style="height: 600px">
+          <div >
+            <!-- <img class="emptyGif" :src="emptyGif">-->
+            <tempreature v-bind:message="value[1]"> </tempreature>
+          </div>
+        </el-col>
+      </el-row>
 
   </div>
 </template>
@@ -29,6 +44,8 @@
     import request from '@/utils/request'
     import tempreature from './temp/temperatureDa'
     import { mapGetters } from 'vuex'
+    import ElHeader from "element-ui/packages/header/src/main";
+    import ElMain from "element-ui/packages/main/src/main";
     export default {
       computed:{
         ...mapGetters([
@@ -37,6 +54,8 @@
         ])
       },
       components: {
+        ElMain,
+        ElHeader,
         ElRow,
         ElCard,
       tempreature},
@@ -58,10 +77,32 @@
         },
       data() {
         return {
-         /* emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'*/
-          emptyGif:'../../../static/img/dog.gif',
-          userRole:'没有初始化',
+          /* emptyGif: 'https://wpimg.wallstcn.com/0e03b7da-db9e-4819-ba10-9016ddfdaed3'*/
+          emptyGif: '../../../static/img/dog.gif',
+          userRole: '没有初始化',
+          value:["jiangsu","南京"],
+          options: [{
+            value: 'jiangsu',
+            label: '江苏',
+            children: [{
+              value: '南京',
+              label: '南京',
+            }, {
+              value: '苏州',
+              label: '苏州',
+            }]
+          }, {
+            value: 'zhejiang',
+            label: '浙江',
+            children: [{
+              value: '杭州',
+              label: '杭州',
 
+            }, {
+              value: '湖州',
+              label: '湖州',
+            }]
+          }],
         }
       },
         methods:{
@@ -136,4 +177,7 @@
   width: 80%;
   margin: 0 auto;
 }
+  .header{
+    height: 450px;
+  }
 </style>
