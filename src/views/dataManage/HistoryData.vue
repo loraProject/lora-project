@@ -98,6 +98,7 @@
               this.controlForms.durDate.toData = '';
             }
             // 改变准备状态
+            this.commitVuex(); // 提交数据-- modify----------------------------------------------------------------------------------------------------
             this.clearReadyRequest()
            // console.log("准备好了吗",this.isReady());
             if (this.isReady()) {
@@ -197,7 +198,11 @@
             var month = strDate.substr(4,2);
             var day = strDate.substr(6,2);
             var hour = strDate.substr(8,2);
-            var formateDate = year+'-'+month+'-'+day+' '+hour +':00'
+            var seconde = '00'
+            if (strDate.length > 10)
+              seconde = strDate.substr(10,2);
+
+            var formateDate = year+'-'+month+'-'+day+' '+hour +':' + seconde
             return formateDate;
           }, // 获得格式化的日期
           getRequestFormatDate(date){
@@ -213,17 +218,12 @@
            // console.log("getDevice",data);
             this.getPanelItem(data)
             this.controlForms.devEui = data;
-            // 初始化当前tab
-          //  console.log("在获得panel之后",this.sensorPanel)
-          //  console.log("获得设备",this.nowTabObj);
-
-           // console.log("准备好了吗",this.isReady());
+            this.commitVuex(); //提交数据
             if (this.isReady()) {
               this.getTabelData()
             }
           }, //获得传感器数据
           changeTabs(tab){
-          //  console.log("in change tabs")
             this.nowTabs = tab.name;
             const nowValue = this.sensorPanel.filter((panel)=>panel.name==tab.name )
             if (nowValue.length != 0) this.nowTabObj = nowValue[0] // 获取当前的tab
@@ -260,7 +260,7 @@
 
 <style scoped lang="scss">
   .history-container{
-    padding: 32px;
+    padding: 45px;
 /*    background-color: rgb(240, 242, 245);*/
     min-height: 100%;
   }

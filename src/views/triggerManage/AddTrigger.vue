@@ -1,15 +1,10 @@
 <template>
 <div class="Trigger">
-  <el-header>
+<!--  <el-header>
     <el-card class="cardm">
       <el-row type="flex" justify="left">
         <el-col :xs="24" :sm="20" :md="20" :lg="18" :xl="10">
          <el-select  placeholder="请选择设备" v-model="value" value="" @change="getSensorData">
-     <!--   <el-option
-          v-for="item in allDevList"
-          :key="item.devEUI"
-          :label="item.devname"
-          :value="item.devEUI">-->
 
         <el-option
           v-for="item in allDevList"
@@ -28,18 +23,46 @@
 
       </el-row>
     </el-card>
-  </el-header>
-  <el-main >
-    <el-card class="cardm" v-loading="loading"
+  </el-header>-->
+  <el-row type="flex" justify="center">
+    <el-col :xl="20" :lg="20">
+    <el-card  v-loading="loading"
              element-loading-text="拼命加载中"
              element-loading-spinner="el-icon-loading"
              element-loading-background="rgba(100, 100, 100, 0.3)">
-      <el-row type="flex" justify="center" :gutter="40">
-        <el-col :xs="20" :sm="16" :md="14" :lg="12" :xl="10">
+      <div slot="header" class="clearfix" style="width: 100%">
+        <el-row type="flex" justify="left" :gutter="32">
+          <el-col :xs="20" :sm="20" :md="20" :lg="5" :xl="4" >
+            <el-select  placeholder="请选择设备" v-model="value" value="" @change="getSensorData">
+
+              <el-option
+                v-for="item in allDevList"
+                :key="item.devEUI"
+                :label="item.devname"
+                :value="item.devEUI">
+              </el-option>
+            </el-select>
+          </el-col>
+          <el-tooltip content="速率设置，如若设置速率，请先选择设备" placement="top" :disabled="!disabled">
+            <el-input-number v-model="num1" :min="8" :max="60" label="速率设置"> </el-input-number>
+          </el-tooltip>
+          <el-button v-bind:disabled="disabled" type="primary" style="margin-left: 5px" v-on:click="setRate">
+            速率设置
+          </el-button>
+
+        </el-row>
+      </div>
+      <el-row  :gutter="40" style="padding: 32px">
+        <el-col :xs="24" :sm="24" :md="11" :lg="12" :xl="12">
           <el-table
+            class="trigger-table"
             :data="sensorList"
             stripe
             height="400">
+            <el-table-column
+              type="index"
+              width="50">
+            </el-table-column>
             <el-table-column
             prop="typename"
             label="传感器名称">
@@ -63,14 +86,24 @@
             </el-table-column>
           </el-table>
         </el-col>
-        <el-col :xs="20" :sm="16" :md="14" :lg="12" :xl="10">
+        <el-col  class="hidden-sm-and-down"  :lg="1" :xl="1">
+          <div style="height: 400px; width: 1px ; background: rgba(131,149,131,0.42)"></div>
+        </el-col>
+
+        <el-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
           <el-table
             :data="triggerList"
+            class="trigger-table"
             stripe
             height="400">
             <el-table-column
+              type="index"
+              width="50">
+            </el-table-column>
+            <el-table-column
               prop="relayName"
               label="继电器名称">
+
             </el-table-column>
             <el-table-column
               prop="relayType"
@@ -167,7 +200,8 @@
         </div>
       </el-dialog>
     </el-card>
-  </el-main>
+    </el-col>
+  </el-row>
 </div>
 </template>
 
@@ -352,9 +386,33 @@
     }
 </script>
 
-<style scoped>
+<style scoped lang="scss">
   .cardm{
     margin: 20px;
     background-color: rgb(240,242,245);
+  }
+
+  .Trigger{
+    padding: 68px;
+  }
+</style>
+
+<style lang="scss">
+   .trigger-table {
+    .table-cell-class {
+      /*    background-color: aqua;*/
+      padding-top: 3px;
+      padding-bottom: 3px;
+      text-align: center;
+    }
+    .el-table--medium td, .el-table--medium th{
+      padding:10px 0;
+    }
+    .table-header-class{
+      background-color: #d3dce6;
+    }
+    .cell{
+      text-align:center;
+    }
   }
 </style>

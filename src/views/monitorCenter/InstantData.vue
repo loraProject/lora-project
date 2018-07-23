@@ -1,43 +1,54 @@
 <template>
-  <div class="instantData history-container" >
+  <el-row  type="flex" justify="center">
+  <el-col class="instantData history-container"  :xl="20" :lg="22" :md="24" :sm="24" :xs="24">
       <el-card class="elcard">
-        <el-row type="flex" justify="left">
-          <el-col  :xs="20" :sm="16" :md="12" :lg="8" :xl="6">
-            设备选择
-            <el-select  placeholder="请选择设备" v-model="value" value="" @change="jointurl">
-              <el-option
-                v-for="item in allDevList"
-                :key="item.devEUI"
-                :label="item.devname"
-                :value="item.devEUI">
-              </el-option>
+        <div slot="header" class="clearfix" style="width: 100%">
+          <el-row type="flex" justify="left"  :gutter="40" style="width: 100%">
+            <el-col  :xs="12" :sm="16" :md="4" :lg="3" :xl="3" style="line-height: 36px">
+              设备选择
+            </el-col >
+            <el-col >
+              <el-select  placeholder="请选择设备" v-model="value" value="" @change="jointurl">
+                <el-option
+                  v-for="item in allDevList"
+                  :key="item.devEUI"
+                  :label="item.devname"
+                  :value="item.devEUI">
+                </el-option>
               </el-select>
-          </el-col>
-        </el-row>
+            </el-col>
+
+          </el-row>
+        </div>
+        <el-tabs   @tab-click="printlog">
+          <template v-for="item in sensorList">
+            <el-tab-pane :label="item.name" >
+              <el-row type="flex" justify="center">
+                <el-tag class="eltag">传感器类型：{{item.label}} ({{item.name}})</el-tag>
+                <el-tag class="eltag">传感器名称：{{item.typename}}</el-tag>
+                <el-tag class="eltag">传感器状态：{{item.state}}</el-tag>
+              </el-row>
+            </el-tab-pane>
+          </template>
+          <el-row type="flex" justify="center">
+            <el-col :xs="24" :sm="24" :md="24" :lg="24" :xl="24">
+              <div id="Temperature" style="width: 100%; height:500px;"><not-found></not-found></div>
+            </el-col>
+          </el-row>
+        </el-tabs>
+
       </el-card>
 
-    <el-tabs type="border-card"  @tab-click="printlog">
-      <template v-for="item in sensorList">
-        <el-tab-pane :label="item.name" >
-            <el-row type="flex" justify="center">
-              <el-tag class="eltag">传感器类型：{{item.label}} ({{item.name}})</el-tag>
-              <el-tag class="eltag">传感器名称：{{item.typename}}</el-tag>
-              <el-tag class="eltag">传感器状态：{{item.state}}</el-tag>
-            </el-row>
-        </el-tab-pane>
-      </template>
-      <el-row type="flex" justify="center">
-        <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
-          <div id="Temperature" style="width: 1000px; height:500px;">图表</div>
-        </el-col>
-      </el-row>
-    </el-tabs>
 
-  </div>
+
+
+  </el-col>
+  </el-row>
 </template>
 
 <script>
   import echarts from 'echarts'
+  import NotFound from './components/401'
   import Vue from 'vue';
   import { getToken, setToken, removeToken } from '@/utils/auth'
   import ElCard from "element-ui/packages/card/src/main";
@@ -53,6 +64,7 @@
   export default {
     components: {
       ElTabPane,
+      NotFound,
       ElRow,
       ElCard},
     name: "InstantData",
@@ -150,6 +162,7 @@
         websocket.onmessage = function(event){
           if ( !That.isJSON(event.data) ){ // 如果此时返回的数据不是json串
             console.log("后台发来消息： " + event.data)
+            That.$notify.success("开始获取实时数据");
             return;
           }
           var data1=JSON.parse(event.data)
@@ -283,7 +296,7 @@
 }
 .history-container{
   padding: 32px;
-  background-color: rgb(240, 242, 245);
+ /* background-color: rgb(240, 242, 245);*/
 }
   .elcard{
     margin-top: 20px;

@@ -1,6 +1,8 @@
 <template >
-
   <div class="UserManage">
+    <el-col :xl="3" :lg="3" :sm="1" class="hidden-sm-and-down" style="height: 100px"></el-col>
+  <el-col class="UserManage" :xl="18" :lg="18" :sm="24" :md="22" :xs="24">
+
     <el-card class="bgc colorhead">
     <el-row type="flex" justify="center" :gutter="5">
 
@@ -17,7 +19,7 @@
     <el-row type="flex" justify="center">
 
       <el-col >
-            <el-table
+            <el-table class="user-table"
               :data="allInfo"
               stripe
               border
@@ -86,6 +88,10 @@
         <el-button type="primary" @click="modifyLimit">确 定</el-button>
       </div>
     </el-dialog>
+
+  </el-col>
+    <el-col :xl="3" :lg="3" :sm="1" class="hidden-sm-and-down" style="height: 100px"></el-col>
+
   </div>
 </template>
 
@@ -238,5 +244,28 @@
 }
   .colorhead{
   /*  background-color: rgb(235,245,255);*/
+  }
+  .UserManage{
+
+  }
+</style>
+
+<style lang="scss">
+  .user-table {
+    .table-cell-class {
+      /*    background-color: aqua;*/
+      padding-top: 3px;
+      padding-bottom: 3px;
+      text-align: center;
+    }
+    .el-table--medium td, .el-table--medium th{
+      padding:10px 0;
+    }
+    .table-header-class{
+      background-color: #d3dce6;
+    }
+    .cell{
+      text-align:center;
+    }
   }
 </style>

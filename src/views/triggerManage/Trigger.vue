@@ -66,14 +66,14 @@
 </script>
 
 <style scoped lang="scss">
-.padswitch{
+/*.padswitch{
   padding-top: 40px;
 }
   .style1{
- /*   margin: 20px;*/
+ !*   margin: 20px;*!
     background-color: rgb(240,242,245);
-  }
+  }*/
   .Trigger{
-    padding: 32px;
+    padding: 40px;
   }
 </style>

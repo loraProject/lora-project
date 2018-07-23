@@ -181,6 +181,7 @@ export default {
 //reset element css of el-icon-close
 .tags-view-wrapper {
   .tags-view-item {
+    border-radius: 2px;
     .el-icon-close {
       width: 16px;
       height: 16px;

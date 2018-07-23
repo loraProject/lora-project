@@ -94,7 +94,7 @@ export const constantRouterMap = [
       path: 'Trigger',
       component: () => import('@/views/triggerManage/AddTrigger'),
       name: 'Trigger',
-      meta: {title: '触发器管理', icon: 'documentation', noCache: true},
+      meta: {title: '继电器管理', icon: 'documentation', noCache: true},
     }/*,
       {
         path: 'triggerList',
