@@ -1,10 +1,10 @@
 <template>
     <div class="temperatureDa">
       <el-card class="cardm">
-        <el-row type="flex" justify="center">
+        <el-row type="flex" justify="left">
           <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
 
-            <div id="Weather" style="width: 700px; height:433px;">未来一周温度</div>
+            <div id="Weather" style="width: 1000px;height:433px;">未来一周温度</div>
           </el-col>
         </el-row>
       </el-card>
@@ -57,6 +57,32 @@
             </el-col>
             <el-col>
               {{weekWeather[6]}}
+            </el-col>
+
+          </el-row>
+        </el-card>
+        <el-card >
+          <el-row type="flex" justify="right">
+            <el-col>
+              {{weektemperature1[0]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[1]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[2]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[3]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[4]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[5]}}
+            </el-col>
+            <el-col>
+              {{weektemperature1[6]}}
             </el-col>
 
           </el-row>
@@ -178,16 +204,19 @@
   import Vue from 'vue';
   import ElCard from "element-ui/packages/card/src/main";
   import ElRow from "element-ui/packages/row/src/row";
+  require('echarts/theme/macarons') // echarts theme
   Vue.prototype.$echarts=echarts
     export default {
       components: {
         ElRow,
         ElCard},
       name: "temperature-da",
+      props: ['message'],
       data(){
           return{
             weekfuture:[],
             weektemperature:[],
+            weektemperature1:[],
             weekWeather:[],
             weekWind:[],
             weekWeek:[],
@@ -268,8 +297,15 @@
       methods:{
         getweather:function () {
           const That=this
-          let charts =That.$echarts.init(document.getElementById('Weather'))
+          let charts =That.$echarts.init(document.getElementById('Weather'),'macarons')
           charts.setOption(That.optionWeather)
+          That.weatherHigh=[]
+          That.weatherLower=[]
+          That.weekWeather=[]
+          That.weekWind=[]
+          That.weekWeek=[]
+          That.weektemperature1=[]
+
           /*request.get("http://v.juhe.cn/weather/index?cityname=%E5%8D%97%E4%BA%AC&key=60eac358d8575e583538007d5d3f667e",{
           dataType: 'jsonp'}).then(data=>
           {
@@ -279,12 +315,13 @@
             alert("Data: " + data + "nStatus: " + status);
             console.log(data.data)
           });*/
-          $.ajax('http://v.juhe.cn/weather/index?cityname=%E5%8D%97%E4%BA%AC&key=60eac358d8575e583538007d5d3f667e', {
+          $.ajax('http://v.juhe.cn/weather/index', {
+            data:{cityname:this.message,key:"60eac358d8575e583538007d5d3f667e"},
             dataType: 'jsonp',
             crossDomain: true,
             success: function (data) {
               if (data && data.resultcode === '200') {
-                //console.log(data);
+                console.log(data);
                 That.weekfuture=data.result.future
                 That.todayDescription=data.result.today
                 That.skDescription=data.result.sk
@@ -297,6 +334,7 @@
                   That.weekWeather.push(That.weekfuture[key].weather)
                   That.weekWind.push(That.weekfuture[key].wind)
                   That.weekWeek.push(That.weekfuture[key].week)
+                  That.weektemperature1.push(That.weekfuture[key].temperature)
                  // console.log(That.weekfuture[key].temperatrue)
                 }
            /*     console.log(That.weektemperature)
@@ -321,6 +359,15 @@
             }
 
           })
+        },
+        refreshweather:function () {
+
+        }
+      },
+      watch: {
+        message(val, oldVal) {//普通的watch监听
+          console.log(this.message)
+          this.getweather()
         }
       }
     }

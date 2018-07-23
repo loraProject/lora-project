@@ -16,13 +16,16 @@
     <el-card class="bgc">
     <el-row type="flex" justify="center">
 
-      <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
-
+      <el-col >
             <el-table
               :data="allInfo"
               stripe
-              height="500"
+              border
+              height="700"
               style="width: 100%">
+              <el-table-column
+                type="index">
+              </el-table-column>
               <el-table-column
                 prop="userid"
                 label="用户名"
@@ -33,22 +36,17 @@
                 label="用户身份"
                 width="180">
               </el-table-column>
-  <!--            <el-table-column
-                prop="password"
-                label="密码">
-              </el-table-column>-->
               <el-table-column
                 fixed="right"
-                label="操作"
-                >
+                label="操作">
                 <template slot-scope="scope">
-                  <el-row type="flex">
+                  <el-row type="flex" justify="right" :gutter="20">
                     <el-col>
                       <!--@click="handleClick(scope.row)"-->
-                       <el-button  type="text" size="small" @click=getUseridLimit(scope.row)>修改权限</el-button>
+                       <el-button  type="primary" size="small" @click=getUseridLimit(scope.row) icon="el-icon-edit" plain>修改权限</el-button>
                     </el-col>
-                    <el-col>
-                        <el-button type="text" size="small" @click=getUseridPasswd(scope.row)>修改密码</el-button>
+                    <el-col >
+                        <el-button type="success" size="small" @click=getUseridPasswd(scope.row) icon="el-icon-edit-outline" plain>修改密码</el-button>
                       </el-col>
                   </el-row>
                 </template>
@@ -128,13 +126,13 @@
                 value:"editor"
               },
               {
-                label:"youk",
-                value:"editor"
+                label:"游客",
+                value:"visitor"
               }
             ]
           }
       },
-        created(){
+        mounted(){
           this.getUserInfo()
         },
       methods:{
