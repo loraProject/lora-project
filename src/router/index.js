@@ -86,23 +86,22 @@ export const constantRouterMap = [
   },
   {
     path: '/triggerManage',
-    meta: {title: '触发器管理', icon: 'documentation', noCache: true},
-    alwaysShow: true, // will always show the root menu
+   /* alwaysShow: true, // will always show the root menu*/
     roles: ['admin', 'editor'],// you can set roles in root nav
     component: Layout,
-    redirect: '/triggerManage/addTrigger',
+    redirect: '/triggerManage/Trigger',
     children: [{
-      path: 'addTrigger',
+      path: 'Trigger',
       component: () => import('@/views/triggerManage/AddTrigger'),
-      name: 'addTrigger',
-      meta: {title: '添加触发器'}
-    },
+      name: 'Trigger',
+      meta: {title: '触发器管理', icon: 'documentation', noCache: true},
+    }/*,
       {
         path: 'triggerList',
         component: () => import('@/views/triggerManage/Trigger'),
         name: 'TriggerList',
         meta: {title: '触发器列表'}
-      }]
+      }*/]
   },
   {
     path: '/userCenter',
@@ -119,9 +118,9 @@ export const constantRouterMap = [
 ]
 /* 有角色分别的权限路由*/
 export const asyncRouterMap = [{
-  path: '/permission',
+  path: '/admin',
   component: Layout,
-  redirect: '/permission/index',
+  redirect: '/admin/page',
   alwaysShow: true, // will always show the root menu
   meta: {
     title: '权限管理',
@@ -131,9 +130,9 @@ export const asyncRouterMap = [{
   children: [{
     path: 'page',
     component: () => import('@/views/admin/RoleManage'),
-    name: '权限管理',
+    name: '设备管理',
     meta: {
-      title: '权限管理',
+      title: '设备管理',
       roles: ['admin'] // or you can only set roles in sub nav
     }
   }, {

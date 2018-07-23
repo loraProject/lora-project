@@ -134,7 +134,7 @@
             ]
           }
       },
-        mounted(){
+        created(){
           this.getUserInfo()
         },
       methods:{

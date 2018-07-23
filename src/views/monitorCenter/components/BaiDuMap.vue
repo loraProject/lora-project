@@ -33,7 +33,7 @@
       pointData: {
         type: Array,
         default() {
-          return [{"latitude": 118.8920008888889, "longitude": 31.910911111111112, "label": "当前位置"},
+          return [{"latitude":31.910911111111112 , "longitude": 118.8920008888889, "label": "当前位置"},
           ]
         }
       }
@@ -58,7 +58,7 @@
             This.map = new BMap.Map("allmap");
             var points = [];
             pointData.forEach((point) => {
-              points.push(new BMap.Point(point.latitude, point.longitude));
+              points.push(new BMap.Point(point.longitude, point.latitude));
             });
             This.map.enableScrollWheelZoom();
             // 这一块地图的显示级别也应该根据算法确定
@@ -117,7 +117,7 @@
         var This = this;
         let points = [];
         pointData.forEach((point) => {
-          points.push(new BMap.Point(point.latitude, point.longitude));
+          points.push(new BMap.Point(point.longitude, point.latitude));
         });
 
         var removeMarker = function (e, ee, marker) {

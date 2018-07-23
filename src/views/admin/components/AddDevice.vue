@@ -67,18 +67,19 @@
         },
         deviceForm:{
           type:Object,
-          default:{
-            deviceName:'',
-            deviceEui:'',
+          default:()=>{ return{
+            deviceName:'设备名称',
+            deviceEui:'000000000000000000',
             devAddress:'',
             devLongitude:'',
             devDimensionality:''
-          }
+          }}
         }
       },
       data(){
         return{
-          deviceName:"",
+          childData:"从子组件中获得的值",
+          deviceName:"fsfsfs",
           deviceEui:"",
           devDimensionality:lat,
           devLongitude:lng,
@@ -93,9 +94,12 @@
       },
       methods:{
         addDevice:function () {
+
+          console.log("添加设备添加设备")
+          const This = this;
           request({
             method:'post',
-            url:'/user/adddevice',
+            url:'/user/adminAddDevice',
             params:
               {
                 devEUI:this.deviceEui,
@@ -103,22 +107,22 @@
                 latitude:this.devDimensionality,
                 longitude:this.devLongitude,
                 address:this.devAddress,
-
-
+                aimUserId:this.addUserName
               },
 
           }).then(response => /*console.log(result.data.info)*/
           {
             this.responseinfo = response.data.info;
-            this.responseresult = response.data.result ;
+            this.responseresult = response.data.code ;
             //console.log(this.responseinfo,this.responseresult)
             /*--------------------成功后的操作-------------------------*/
-            if(this.responseresult == true){
+            if(this.responseresult == 1){
               this.$message({
                 message:this.responseinfo,
                 type:"success"
               });
-
+              This.$emit('flushDeviceList')
+              console.log("flush设备列表")
             }
             else {
               this.$message.error(this.responseinfo);
