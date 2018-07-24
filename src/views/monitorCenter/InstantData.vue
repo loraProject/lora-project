@@ -31,10 +31,13 @@
             </el-tab-pane>
           </template>
           <el-row type="flex" justify="center">
-            <el-col :xs="20" :sm="20" :md="18" :lg="18" :xl="18">
-              <div id="Temperature" style="width: 100%; height:500px;"></div>
+            <el-col :xs="20" :sm="20" :md="18" :lg="18" :xl="18" v-show="notFound">
+              <not-found ></not-found>
             </el-col>
-            <el-col :xs="4" :sm="4" :md="6" :lg="6" :xl="6">
+            <el-col :xs="24" :sm="24" :md="24" :lg="16" :xl="16" v-show="divShow">
+              <div id="Temperature" style="width: 800px; height:500px;" > </div>
+            </el-col>
+            <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"  v-show="divShow">
               <div id="gpsmap" style="width: 100%; height:450px;margin: 20px"></div>
             </el-col>
           </el-row>
@@ -75,6 +78,8 @@
     name: "InstantData",
     data(){
       return{
+        notFound:true,
+        divShow:false,
         sensorline:[],
         sensornum:"0",
         alldata:[],
@@ -232,6 +237,7 @@
         }).then(data=>{
           // console.log(data.data);
            this.allDevList=data.data;
+
         //  console.log(this.allDevList)
         })
       },
@@ -243,11 +249,15 @@
         }).then(data=>{
           //console.log(data.data.data)
           this.sensorList=data.data.data
-          if (this.sensorList==null) {
+          if (this.sensorList==null || this.sensorList.length == 0) {
             this.sensornum=0
+            this.notFound = true;
+            this.divShow = false;
           }
           /*-------------------为空------------------判断-----------------*/
           else {
+            this.notFound = false;
+            this.divShow = true;
             this.sensornum=this.sensorList.length
          //   console.log(this.sensorList)
            // console.log(this.sensornum);
@@ -302,8 +312,7 @@
         return {
           //name:this.nowtime.toString(),
           value: [
-            datax
-            /*[this.nowtime.getMonth()+1,this.nowtime.getDate()].join('/') + " " +[this.nowtime.getHours(), this.nowtime.getMinutes(), this.nowtime.getSeconds()].join(':')*/,
+            datax,
             datay
           ]
           /*获取数据*/
@@ -318,16 +327,6 @@
         map.addOverlay(marker);
         map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
         map.enableContinuousZoom();
-    /*    map.addEventListener("click",function(e){
-          //console.log(e.point.lng + "," + e.point.address);
-
-          lng=e.point.lng;
-          lat=e.point.lat;
-          map.removeOverlay(marker);
-          marker = new BMap.Marker(e.point);        // 创建标注
-          map.addOverlay(marker);
-          // console.log(lat)
-        });*/
       },
       getNewGps:function (x,y) {
         map.removeOverlay(marker);

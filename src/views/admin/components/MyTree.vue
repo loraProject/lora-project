@@ -1,7 +1,7 @@
 <template>
   <div>
     <el-tree
-      :data="data5"
+      :data="data6"
       node-key="id"
       @node-click="getNodeInfo"
       :expand-on-click-node="false"
@@ -54,7 +54,7 @@
               size="mini"
               @click="() => getTriggerState(node, data)"
             >
-              同步
+              {{sync}}
             </el-button>
              <el-button
                type="warning"
@@ -79,14 +79,14 @@
          </el-row>
       </span>
     </el-tree>
-    <el-dialog title="添加设备" :visible.sync="dialogTableVisible" width="80%" center top="10vh"  >
+    <el-dialog title="添加设备" :visible.sync="dialogTableVisible" width="80%" center top="10vh"  append-to-body>
       <add-device :add-user-name="parentName" ref="addDevice" @flushDeviceList = flushDeviceList></add-device>
     </el-dialog>
 
-    <el-dialog title="添加传感器" :visible.sync="sensorDialog" width=400px center top="10vh" > <!--// 根据屏幕进行选择-->
+    <el-dialog title="添加传感器" :visible.sync="sensorDialog" width=400px center top="10vh" append-to-body> <!--// 根据屏幕进行选择-->
       <add-sensor :add-user-name="parentName" :dev-eui="addDev.eui" :dev-name="addDev.name"  @flushDeviceList = flushDeviceList></add-sensor>
     </el-dialog>
-    <el-dialog title="添加继电器" :visible.sync="triggerDialog" width=400px center top="10vh"> <!--// 根据屏幕进行选择-->
+    <el-dialog title="添加继电器" :visible.sync="triggerDialog" width=400px center top="10vh" append-to-body> <!--// 根据屏幕进行选择-->
       <add-trigger :add-user-name="parentName" :dev-eui="addDev.eui" :dev-name="addDev.name"  @flushDeviceList = flushDeviceList></add-trigger>
     </el-dialog>
 
@@ -111,11 +111,19 @@
         const data = res.data;
         if (res.code == 1) {
           this.data5 = data;
+      /*    console.log(this.data5)*/
         } else {
           this.$message(res.info, 'error')
         }
 
       })
+    },
+    props:{
+      data6:{
+        type:Array,
+        default() {return null}
+      }
+
     },
     data() {
       const data = [];
@@ -137,7 +145,9 @@
           userId:'user',
         },
         sensorNode:'', //传感器节点
-        delayNode:'' //继电器节点
+        delayNode:'', //继电器节点
+        sync:'未同步'
+
       }
     },
     methods: {
@@ -185,7 +195,7 @@
         }else if (data.type == 'triggerDir'){
           this.triggerDialog = true;
           const parent = node.parent;
-          console.log(parent);
+        //  console.log(parent);
           this.addDev.name = parent.data.label;
           this.addDev.eui = parent.data.id;
           this.addDeviceNode =   parent.parent.parent //获得最开始的node
@@ -194,8 +204,7 @@
 
       },
       handelChange(node, data) {
-
-
+       /* console.log(JSON.stringify(data))*/
         if (data.type === "sensor"){ //改变传感器状态
 
           const loading = this.$loading({
@@ -227,6 +236,9 @@
             this.$message.error(err);
           })
         }
+        if (data.type == "control"){
+          this.sync = '需同步'
+        }
       },
       remove(node, data) {
         // 删除设备接口，还没有完善
@@ -237,7 +249,7 @@
           background: 'rgba(0, 0, 0, 0.7)'
         });
 
-        console.log("in remove", data.type)
+      //  console.log("in remove", data.type)
         if (data.type == 'device') {
           this.$confirm('此项操作将删除该项目的所有数据，是否继续?', '提示', {
             confirmButtonText: '忍痛删除！！',
@@ -248,7 +260,7 @@
             var params = new URLSearchParams(); // urlSearchParam
             params.append('devEUI',data.id);
             request.post('/user/deleteDevice',params).then((request)=>{
-                console.log(request);
+            //    console.log(request);
                  const res = request.data;
                  if (res.code == 1){
                    const parent = node.parent;
@@ -281,12 +293,12 @@
             const dev = node.parent.parent;
             var devEui = dev.data.id;
             var typeId = data.typeId;
-            console.log(dev);
+         //   console.log(dev);
 
             var params = new URLSearchParams();
             params.append('devEUI',devEui);
             params.append('typeid',typeId);
-            console.log(devEui, typeId);
+          //  console.log(devEui, typeId);
 
             request.post('/user/devices/deleteSensor',params).then((response)=>{
               const res = response.data;
@@ -371,6 +383,7 @@
             this.$message.success("获取消息成功");
             // 处理传感器数据
             // 按照switchid存储数据
+            this.sync = "已同步"
             var switchStatus = [];
             data.forEach((delay)=>{
               var index = delay.switchId; // 获得switchId
@@ -385,17 +398,32 @@
                   delay.status = false; // 状态
                 }
             });
-
-
+            node.data.rightState =  data; // 将获取的正确状态存储
           }else {
             this.$message.error("获取消息失败"); // 获取消息失败
             this.$notify.err(res.info); // 获取失败
+
           }
           loading.close();
         }).catch((err)=>{
           loading.close(); // 关闭loading
         })
 
+      },
+      changeControlState(data ,delays ){
+        data.forEach((delay)=>{
+          var index = delay.switchId; // 获得switchId
+          switchStatus[index] = delay.state; // 存储状态
+        })
+        delays.forEach((delay)=>{
+          var index = delay.switchId; // 转换状态
+          var status = switchStatus[index] ; // 转换状态
+          if (status == 1){
+            delay.status = true;
+          }else {
+            delay.status = false; // 状态
+          }
+        });
       },
       setTriggerState(node, data){
 
@@ -425,7 +453,8 @@
         request.post('/user/devices/changeRelayMulSwitch',params).then((request)=>{
           const res = request.data;
           if (res.result == true){
-            this.$message.success("改变成功")
+            this.$message.success("改变成功");
+            this.sync = "已同步"
           }else {
             this.$message.error(res.info); // 改变失败
      /*       delays.forEach((delay)=>{  //设备

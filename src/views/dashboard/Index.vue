@@ -155,7 +155,11 @@
             //  console.log(key+':'+That.weekfuture[key])
             That.weektemperature.push(That.weekfuture[key].temperature.split("~")) // 日期数组
             var tmp=That.weekfuture[key].temperature.split("~")
-            var windTmep = That.weekfuture[key].wind.split("-")
+            var windTmep = That.weekfuture[key].wind.split("-");
+            if (windTmep.length < 2) {
+              windTmep[0] = 0;
+              windTmep[1] = 0;
+            }
             That.weatherLower.push(tmp[0].toString().replace(/[^0-9]/ig,"")) // 最低温度数组
             That.weatherHigh.push(tmp[1].toString().replace(/[^0-9]/ig,"")) // 最高温度数组
           //  That.windHigh.push()
