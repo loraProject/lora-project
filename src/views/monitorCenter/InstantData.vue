@@ -16,7 +16,7 @@
         </el-row>
       </el-card>
 
-    <el-tabs type="border-card"  @tab-click="printlog">
+    <el-tabs type="border-card"  @tab-click="printlog" >
       <template v-for="item in sensorList">
         <el-tab-pane :label="item.name" >
             <el-row type="flex" justify="center">
@@ -26,12 +26,18 @@
             </el-row>
         </el-tab-pane>
       </template>
-      <el-row type="flex" justify="center">
-        <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
+      <el-row type="flex" justify="left" style="width: 100%">
+        <el-col >
           <div id="Temperature" style="width: 1000px; height:500px;">图表</div>
         </el-col>
+        <el-card>
+        <el-col style="float: right">
+          <bai-du-map height="500px" width="300px"> </bai-du-map>
+        </el-col>
+        </el-card>
       </el-row>
     </el-tabs>
+
 
   </div>
 </template>
@@ -44,6 +50,7 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
+  import BaiDuMap from "./components/BaiDuMap";
   import $ from 'jquery'
   require('echarts/theme/macarons') // echarts theme
   var websocket;
@@ -54,7 +61,8 @@
     components: {
       ElTabPane,
       ElRow,
-      ElCard},
+      ElCard,
+      BaiDuMap},
     name: "InstantData",
     data(){
       return{
