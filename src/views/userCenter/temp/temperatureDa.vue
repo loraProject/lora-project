@@ -337,12 +337,6 @@
                   That.weektemperature1.push(That.weekfuture[key].temperature)
                  // console.log(That.weekfuture[key].temperatrue)
                 }
-           /*     console.log(That.weektemperature)
-                console.log(That.weekWind)
-                console.log(That.weekWeather)
-                console.log(That.weatherLower)*/
-                //console.log(String(nowtime.getFullYear())+String(nowtime.getMonth()))
-                // console.log(this.weekfuture)
                 charts.setOption({
                   xAxis:[{
                     data:That.weekWeek

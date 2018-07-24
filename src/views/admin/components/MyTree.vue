@@ -261,10 +261,13 @@
                    this.$message.error(res.info+"，删除设备失败");
                  }
                  loading.close();
+            }).catch((err)=>{
+              this.$message.error(err)
+              loading.close();
             })
 
           }).catch(() => {
-            loading.close();
+
             this.$message.error("取消操作")
           })
         }
@@ -425,6 +428,10 @@
             this.$message.success("改变成功")
           }else {
             this.$message.error(res.info); // 改变失败
+     /*       delays.forEach((delay)=>{  //设备
+              delay.switchId; // switchId// 修改Id
+            })*/
+     //  回到改变之前的状态
           }
           console.log(res);
           loading.close(); //关闭加载

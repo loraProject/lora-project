@@ -1,10 +1,17 @@
 <template>
  <!-- <h1>首页，展示传感器实时数据图表</h1>-->
   <div class="dashboard-container">
-  <panel-group v-bind:data1=number @handleSetLineChartData="handleSetLineChartData" class="panel-group"></panel-group>
+  <panel-group v-bind:data1=number @handleSetLineChartData="handleSetLineChartData" class="panel-group"
+               :data1=100
+               :data2="this.windStep"
+               :data3="this.temperatureNumber"
+               :data4="this.humidityNumber"
+               :wind-direction="windDirection"
+  ></panel-group>
+
 
     <el-row style="background:#fff;padding:16px 16px 0;margin-bottom:32px;">
-      <line-chart :chart-data="lineChartData"  v-bind:x-axis-data="xAxisData"></line-chart>
+      <line-chart :chart-data="lineChartData"  :x-axis-data="this.xAxisData" :len-data="lengData" ></line-chart>
     </el-row>
 
     <el-row  :gutter="32">
@@ -61,6 +68,8 @@
     }
   }
 
+
+
     export default {
         name: "dashboard",
       components:{PanelGroup, LineChart, RaddarChart, BoxCard},
@@ -71,24 +80,129 @@
           this.xAxisData.unshift(thisDay);
         }
       },
+      mounted(){ //获取当前位置
+
+        var myCity = new BMap.LocalCity();
+        myCity.get(this.myFun); //获得 获取位置南京市
+      },
       data()
       {
         return {
           number: 1024,
-          lineChartData: lineChartData.newVisitis,
+          lineChartData: lineChartData.temperature,
           xAxisData:[],
-
+          weekfuture:[],
+          weektemperature:[],
+          weektemperature1:[],
+          weekWeather:[],
+          weekWind:[],
+          weekWeek:[],
+          weatherLower:[],
+          weatherHigh:[],
+          todayDescription:[],
+          skDescription:[],
+          windLow:[],
+          windHigh:[],
+          lenData: {
+            newVisitis: ['最高','最低']
+            ,
+            wind: ['最低风力级别','最高风力级别'],
+            temperature:  ['最高温度','最低温度'],
+            humidity:  ['最高4','最低']
+          },
+          lengData:['最高','最低'],
+          windStep:2,
+          temperatureNumber:28,
+          humidityNumber:84,
+          windDirection:''
         }
-      },
-      computed:{
-
       },
       methods:{
         getRandomNumber() {
           return
         },
         handleSetLineChartData(type){
+
+          if (type == 'humidity' || type == 'newVisitis') return;
+          this.lengData = this.lenData[type]
           this.lineChartData = lineChartData[type]
+        },
+        handlePanelData(data)
+        {
+          console.log(data)
+          const strHumdity = data.humidity.replace(/[^0-9]/ig,""); //只获取数据
+          this.humidityNumber = Number(strHumdity);
+          this.temperatureNumber= Number(data.temp); //获取当前温度
+          this.windDirection = data.wind_direction; // 获取风的位置
+          this.windStep  =  Number(data.wind_strength.replace(/[^0-9]/ig,"")); //2级别
+
+        } ,
+        handleData(data){
+          console.log(data)
+          this.handlePanelData(data.sk);
+          var That = this;
+          That.weatherHigh=[]
+          That.weatherLower=[]
+          That.weekWeather=[]
+          That.weekWind=[]
+          That.weekWeek=[]
+          That.weektemperature1=[]
+          const futerData = data.future; // 未来的天气
+          That.weekfuture= futerData;
+          That.todayDescription=data.today
+          That.skDescription=data.sk;
+          for(var key in That.weekfuture){
+            //  console.log(key+':'+That.weekfuture[key])
+            That.weektemperature.push(That.weekfuture[key].temperature.split("~")) // 日期数组
+            var tmp=That.weekfuture[key].temperature.split("~")
+            var windTmep = That.weekfuture[key].wind.split("-")
+            That.weatherLower.push(tmp[0].toString().replace(/[^0-9]/ig,"")) // 最低温度数组
+            That.weatherHigh.push(tmp[1].toString().replace(/[^0-9]/ig,"")) // 最高温度数组
+          //  That.windHigh.push()
+            That.windLow.push(windTmep[0].toString().replace(/[^0-9]/ig,"")) // 最风级别度数组
+            That.windHigh.push(windTmep[1].toString().replace(/[^0-9]/ig,"")) // 最低风级别
+
+            That.weekWeather.push(That.weekfuture[key].weather) //天气情况
+            That.weekWind.push(That.weekfuture[key].wind)  //风力级别
+            That.weekWeek.push(That.weekfuture[key].week)  // 横坐标，及星期几
+            That.weektemperature1.push(That.weekfuture[key].temperature)
+            // console.log(That.weekfuture[key].temperatrue)
+          }
+          console.log("windlow",That.windLow);
+          That.xAxisData = That.weekWeek;
+          lineChartData.temperature.thisWeekData = That.weatherLower
+          lineChartData.temperature.lastWeekData = That.weatherHigh
+          lineChartData.wind.thisWeekData = That.windHigh;
+          lineChartData.wind.lastWeekData = That.windLow;
+
+
+        },
+        myFun(result){
+          var cityName = result.name;
+          this.$notify.success("根据您的IP地址定位当前城市："+cityName); //城市名称
+          this.nowCity = cityName;
+
+          this.getWeatherData(this.nowCity); // 获得南京市的天气
+        },
+        getWeatherData(city){
+
+          var This = this;
+          $.ajax('http://v.juhe.cn/weather/index', {
+            data:{cityname:city,key:"60eac358d8575e583538007d5d3f667e"},
+            dataType: 'jsonp',
+            crossDomain: true,
+            success: function (data) {
+              if (data && data.resultcode === '200') {
+
+                const res = data.result;
+                This.handleData(res);
+                //打印数据
+              }else{
+                This.$message.error("获得天气数据失败");
+              }
+            }
+
+          })
         },
 
       }
