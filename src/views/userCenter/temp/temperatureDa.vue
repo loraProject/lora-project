@@ -1,15 +1,101 @@
 <template>
     <div class="temperatureDa">
-      <el-card class="cardm">
+     <!-- <el-card class="cardm">
         <el-row type="flex" justify="left">
           <el-col :xs="22" :sm="20" :md="20" :lg="18" :xl="18">
 
             <div id="Weather" style="width: 1000px;height:433px;">未来一周温度</div>
           </el-col>
         </el-row>
-      </el-card>
-      <el-card class="cardm">
-        <el-card style="background-color: #F0F2F5">
+      </el-card>-->
+      <el-row type="flex" justify="center">
+        <el-col :xs="24" :sm="20" :md="20" :lg="12" :xl="12">
+          <el-card class="cardm">
+            <el-card class="mbg1">
+              <el-row type="flex" justify="right">
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  天气:<img :src="weatherimg" class="imgstyle">
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.weather}}
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  当前温度:<img :src="temperatureimg" class="imgstyle">
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{skDescription.temp}}℃
+                </el-col>
+              </el-row>
+            </el-card>
+            <el-card class="mbg2">
+              <el-row type="flex" justify="right">
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  风速:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{skDescription.wind_strength}}
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  风向:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{skDescription.wind_direction}}
+                </el-col>
+              </el-row>
+            </el-card>
+            <el-card class="mbg1">
+              <el-row type="flex" justify="right">
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  湿度:    <img :src="humidity" class="imgstyle">
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{skDescription.humidity}}
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  紫外线指标:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.uv_index}}
+                </el-col>
+              </el-row>
+            </el-card>
+            <el-card class="mbg2">
+              <el-row type="flex" justify="right">
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  洗涤指标:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.wash_index}}
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  旅行指标:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.travel_index}}
+                </el-col>
+              </el-row>
+            </el-card>
+            <el-card class="mbg1">
+              <el-row type="flex" justify="right">
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  着装指标:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.dressing_index}}
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  着装建议:
+                </el-col>
+                <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
+                  {{todayDescription.dressing_advice}}
+                </el-col>
+              </el-row>
+            </el-card>
+          </el-card>
+        </el-col>
+        <el-col :xs="24" :sm="20" :md="20" :lg="12" :xl="12">
+          <el-card class="cardm">
+          <el-card style="background-color: #F0F2F5">
           <el-row type="flex" justify="right">
             <el-col>
               {{weekWeek[0]}}
@@ -35,7 +121,7 @@
 
           </el-row>
         </el-card>
-        <el-card>
+          <el-card>
           <el-row type="flex" justify="right">
             <el-col>
               {{weekWeather[0]}}
@@ -61,7 +147,7 @@
 
           </el-row>
         </el-card>
-        <el-card >
+          <el-card >
           <el-row type="flex" justify="right">
             <el-col>
               {{weektemperature1[0]}}
@@ -87,7 +173,7 @@
 
           </el-row>
         </el-card>
-        <el-card>
+          <el-card>
           <el-row type="flex" justify="right">
             <el-col>
               {{weekWind[0]}}
@@ -113,88 +199,10 @@
 
           </el-row>
         </el-card>
-      </el-card>
-      <el-card class="mbg1">
-        <el-row type="flex" justify="right">
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            天气:<img :src="weatherimg" class="imgstyle">
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.weather}}
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            当前温度:<img :src="temperatureimg" class="imgstyle">
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{skDescription.temp}}℃
-          </el-col>
-        </el-row>
-      </el-card>
-        <el-card class="mbg2">
-          <el-row type="flex" justify="right">
-            <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-              风速:
-            </el-col>
-            <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-              {{skDescription.wind_strength}}
-            </el-col>
-            <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-              风向:
-            </el-col>
-            <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-              {{skDescription.wind_direction}}
-            </el-col>
-          </el-row>
-        </el-card>
-      <el-card class="mbg1">
-        <el-row type="flex" justify="right">
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            湿度:    <img :src="humidity" class="imgstyle">
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{skDescription.humidity}}
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            紫外线指标:
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.uv_index}}
-          </el-col>
-        </el-row>
-      </el-card>
-      <el-card class="mbg2">
-        <el-row type="flex" justify="right">
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            着装指标:
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.dressing_index}}
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            着装建议:
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.dressing_advice}}
-          </el-col>
-        </el-row>
-      </el-card>
-      <el-card class="mbg1">
-        <el-row type="flex" justify="right">
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            洗涤指标:
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.wash_index}}
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            旅行指标:
-          </el-col>
-          <el-col :xs="12" :sm="10" :md="8" :lg="6" :xl="4">
-            {{todayDescription.travel_index}}
-          </el-col>
-        </el-row>
-      </el-card>
+          </el-card>
+        </el-col>
 
+      </el-row>
     </div>
 </template>
 
@@ -297,8 +305,8 @@
       methods:{
         getweather:function () {
           const That=this
-          let charts =That.$echarts.init(document.getElementById('Weather'),'macarons')
-          charts.setOption(That.optionWeather)
+         /* let charts =That.$echarts.init(document.getElementById('Weather'),'macarons')
+          charts.setOption(That.optionWeather)*/
           That.weatherHigh=[]
           That.weatherLower=[]
           That.weekWeather=[]
@@ -343,7 +351,7 @@
                 console.log(That.weatherLower)*/
                 //console.log(String(nowtime.getFullYear())+String(nowtime.getMonth()))
                 // console.log(this.weekfuture)
-                charts.setOption({
+           /*     charts.setOption({
                   xAxis:[{
                     data:That.weekWeek
                   }],
@@ -354,15 +362,12 @@
                     name:"最高温度",
                     data: That.weatherHigh
                   }]
-                });
+                });*/
               }
             }
 
           })
         },
-        refreshweather:function () {
-
-        }
       },
       watch: {
         message(val, oldVal) {//普通的watch监听

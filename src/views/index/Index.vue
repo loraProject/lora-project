@@ -31,8 +31,8 @@
       <el-col :xl="16" :lg="18">
 
       <el-carousel class="producer-el-carousel" :interval="4000" type="card" height="320px" ref="prodCarousel">
-        <el-carousel-item v-for="item in 6" :key="item">
-          <h3>{{ item }}</h3>
+        <el-carousel-item v-for="item in sensorImg" :key="item">
+          <img class="carImg" v-lazy= "item"/>
         </el-carousel-item>
       </el-carousel>
       </el-col>
@@ -87,7 +87,7 @@
       <el-col :lg="2" :xl="4" class="hidden-md-and-down" >
         <div style="background-color: transparent" class="grid-content bg-purple"></div>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
+      <el-col :xs="24" :sm="24" :md="20" :lg="20" :xl="18">
         <div class="coop-card" align="center">
           <div class="item-content">
             <p class="coop-title">{{coopTitle}}</p>
@@ -95,14 +95,14 @@
           </div>
         </div>
       </el-col>
-      <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
+    <!--  <el-col :xs="24" :sm="24" :md="12" :lg="10" :xl="8">
         <div class="coop-card" align="center">
-          <div class="item-content">
+         &lt;!&ndash; <div class="item-content">
             <p class="coop-title">{{coopScan}}</p>
             <p class="coop-content"><img v-lazy="appCode"/></p>
-          </div>
+          </div>&ndash;&gt;
         </div>
-      </el-col>
+      </el-col>-->
       <el-col  :lg="2" :xl="4"  class="hidden-md-and-down">
         <div class="grid-content bg-purple" style="background-color: transparent"></div>
       </el-col>
@@ -137,14 +137,19 @@
               require("../../assets/index_image/ca_3.jpg"),
               require("../../assets/index_image/ca_4.jpg"),
             ],
+            sensorImg:[
+              require("../../assets/index_image/dev1.jpg"),
+              require("../../assets/index_image/dev2.jpg"),
+              require("../../assets/index_image/dev3.jpg"),
+              require("../../assets/index_image/gas.jpg"),
+            ],
             coopTitle:"联系我们",
-            coopContent:"    公司地址：重庆市渝北区金州大道西段106号互联网产业园7栋7楼\r\n" +
-            "    联系电话: 13996250880 （服务电话）\r\n" +
+            coopContent:"    公司地址：江苏省南京市江宁区弘景大道格致路100号金陵科技学院\r\n" +
             "    工作时间: 工作日上午9:00-12:00，下午13:00-18:00\r\n" +
-            "    业务合作: aihua@cmiot.chinamobile.com\r\n" +
-            "    消费者问题反馈QQ：702461159   技术支持交流QQ群：700153083",
-            coopScan:"扫描二维码下载APP",
-            appCode: require("../../assets/index_image/appCode.png")
+            "    业务合作: https://github.com/\r\n" +
+            "    电话:8625-86188966 传真:8625-86188987 邮编:211169",
+           // coopScan:"扫描二维码下载APP",
+           // appCode: require("../../assets/index_image/appCode.png")
 
           }
         },

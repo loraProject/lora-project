@@ -179,8 +179,8 @@
           That.lat=data1.latitude.value
           That.lng=data1.longitude.value
 
-          console.log(That.lat)
-          console.log(That.lng)
+          //console.log(That.lat)
+         // console.log(That.lng)
           That.getNewGps(That.lng,That.lat)
           That.splitData(data1)
           charts.setOption({

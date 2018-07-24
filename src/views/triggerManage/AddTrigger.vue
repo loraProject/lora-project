@@ -53,7 +53,7 @@
         </el-row>
       </div>
       <el-row  :gutter="40" style="padding: 32px">
-        <el-col :xs="24" :sm="24" :md="11" :lg="12" :xl="12">
+        <el-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
           <el-table
             class="trigger-table"
             :data="sensorList"
@@ -86,10 +86,9 @@
             </el-table-column>
           </el-table>
         </el-col>
-        <el-col  class="hidden-sm-and-down"  :lg="1" :xl="1">
+        <el-col  class="hidden-sm-and-down"  :lg="1" :xl="1" :md="1">
           <div style="height: 400px; width: 1px ; background: rgba(131,149,131,0.42)"></div>
         </el-col>
-
         <el-col :xs="24" :sm="24" :md="11" :lg="11" :xl="11">
           <el-table
             :data="triggerList"
