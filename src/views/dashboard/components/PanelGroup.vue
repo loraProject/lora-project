@@ -115,7 +115,7 @@ export default {
         background: #36a3f7;
       }
       .icon-money {
-        background: #f4516c;
+        background: #ff3c5c;
       }
       .icon-shoppingCard {
         background: #34bfa3

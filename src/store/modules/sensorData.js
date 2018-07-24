@@ -31,11 +31,13 @@ const sensorData ={
       state.sensorData = sensorData; // 传感器数据 时间，传感器名称，数据
       state.dateValue = [];
       state.sensorValue = [];
-      sensorData.forEach((entry)=>{
-          state.dateValue.push(entry.date) //  获得横轴时间
-          state.sensorValue.push(entry.value) // 获得大小
-        }
-      )
+      if (sensorData != null)
+        sensorData.forEach((entry) => {
+            state.dateValue.push(entry.date) //  获得横轴时间
+            state.sensorValue.push(entry.value) // 获得大小
+          }
+        )
+
     },
     SET_DEVNAMELIST:(state, devNameList)=>{
 

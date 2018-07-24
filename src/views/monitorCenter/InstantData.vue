@@ -1,68 +1,77 @@
 <template>
-  <div class="instantData history-container" >
+  <el-row  type="flex" justify="center">
+  <el-col class="instantData history-container"  :xl="20" :lg="22" :md="24" :sm="24" :xs="24">
       <el-card class="elcard">
-        <el-row type="flex" justify="left">
-          <el-col  :xs="20" :sm="16" :md="12" :lg="8" :xl="6">
-            设备选择
-            <el-select  placeholder="请选择设备" v-model="value" value="" @change="jointurl">
-              <el-option
-                v-for="item in allDevList"
-                :key="item.devEUI"
-                :label="item.devname"
-                :value="item.devEUI">
-              </el-option>
+        <div slot="header" class="clearfix" style="width: 100%">
+          <el-row type="flex" justify="left"  :gutter="40" style="width: 100%">
+            <el-col  :xs="12" :sm="16" :md="4" :lg="3" :xl="3" style="line-height: 36px">
+              设备选择
+            </el-col >
+            <el-col >
+              <el-select  placeholder="请选择设备" v-model="value" value="" @change="jointurl">
+                <el-option
+                  v-for="item in allDevList"
+                  :key="item.devEUI"
+                  :label="item.devname"
+                  :value="item.devEUI">
+                </el-option>
               </el-select>
-          </el-col>
-        </el-row>
+            </el-col>
+
+          </el-row>
+        </div>
+        <el-tabs   @tab-click="printlog">
+          <template v-for="item in sensorList">
+            <el-tab-pane :label="item.name" >
+              <el-row type="flex" justify="center">
+                <el-tag class="eltag">传感器类型：{{item.label}} ({{item.name}})</el-tag>
+                <el-tag class="eltag">传感器名称：{{item.typename}}</el-tag>
+                <el-tag class="eltag">传感器状态：{{item.state}}</el-tag>
+              </el-row>
+            </el-tab-pane>
+          </template>
+          <el-row type="flex" justify="center">
+            <el-col :xs="20" :sm="20" :md="18" :lg="18" :xl="18">
+              <div id="Temperature" style="width: 100%; height:500px;"></div>
+            </el-col>
+            <el-col :xs="4" :sm="4" :md="6" :lg="6" :xl="6">
+              <div id="gpsmap" style="width: 100%; height:450px;margin: 20px"></div>
+            </el-col>
+          </el-row>
+        </el-tabs>
+
       </el-card>
 
-    <el-tabs type="border-card"  @tab-click="printlog" >
-      <template v-for="item in sensorList">
-        <el-tab-pane :label="item.name" >
-            <el-row type="flex" justify="center">
-              <el-tag class="eltag">传感器类型：{{item.label}} ({{item.name}})</el-tag>
-              <el-tag class="eltag">传感器名称：{{item.typename}}</el-tag>
-              <el-tag class="eltag">传感器状态：{{item.state}}</el-tag>
-            </el-row>
-        </el-tab-pane>
-      </template>
-      <el-row type="flex" justify="left" style="width: 100%">
-        <el-col >
-          <div id="Temperature" style="width: 1000px; height:500px;">图表</div>
-        </el-col>
-        <el-card>
-        <el-col style="float: right">
-          <bai-du-map height="500px" width="300px"> </bai-du-map>
-        </el-col>
-        </el-card>
-      </el-row>
-    </el-tabs>
 
 
-  </div>
+
+  </el-col>
+  </el-row>
 </template>
 
 <script>
   import echarts from 'echarts'
+  import NotFound from './components/401'
   import Vue from 'vue';
   import { getToken, setToken, removeToken } from '@/utils/auth'
   import ElCard from "element-ui/packages/card/src/main";
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
-  import BaiDuMap from "./components/BaiDuMap";
   import $ from 'jquery'
   require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
   var drawflag=""
+  var map;
+  var marker;
   Vue.prototype.$echarts=echarts
   export default {
     components: {
       ElTabPane,
+      NotFound,
       ElRow,
-      ElCard,
-      BaiDuMap},
+      ElCard},
     name: "InstantData",
     data(){
       return{
@@ -76,8 +85,10 @@
         allDevList:[],
         sensorList:[],
         value:"",
-        weburl:"ws://192.168.1.120:8090/websocket/",
+        weburl:"ws://192.168.1.117:8090/websocket/",
         webtmpurl:"",
+        lat:"",
+        lang:"",
         //token
         token:getToken(),
         /* 实时显示表*/
@@ -104,13 +115,6 @@
               show: true
             }
           },
-          toolbox: {
-            feature: {
-              dataView: {show: true, readOnly: false},
-              restore: {show: true},
-              saveAsImage: {show: true}
-            }
-          },
           dataZoom:[
             {
               type:'slider',
@@ -132,9 +136,13 @@
     },
     mounted(){
       this.getdevlist()
+      this.getInitmap(118.903787,31.91416)
     },
-    beforeDestroy(){
+    destroyed(){
       this.closeWebSocket()
+    },
+    destroyed(){
+
     },
     methods:{
       getData:function () {
@@ -162,9 +170,18 @@
         websocket.onmessage = function(event){
           if ( !That.isJSON(event.data) ){ // 如果此时返回的数据不是json串
             console.log("后台发来消息： " + event.data)
+            That.$notify.success("开始获取实时数据");
             return;
           }
           var data1=JSON.parse(event.data)
+          console.log(event.data)
+          /*---------------------截取gps数据绘图---------------------*/
+          That.lat=data1.latitude.value
+          That.lng=data1.longitude.value
+
+          console.log(That.lat)
+          console.log(That.lng)
+          That.getNewGps(That.lng,That.lat)
           That.splitData(data1)
           charts.setOption({
             xAxis:[{
@@ -190,7 +207,7 @@
         }
       },
       isJSON(str) {
-        if (typeof str === 'string') { // 判断是否是json字符串
+        if (typeof str == 'string') { // 判断是否是json字符串
           try {
             JSON.parse(str);
             return true;
@@ -264,6 +281,14 @@
         drawflag=tab.label
         let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(this.lineOptiontest)
+        charts.setOption({
+          xAxis:[{
+            data:allsensor.get("date")
+          }],
+          series: [{
+            data: allsensor.get(drawflag)
+          }]
+        });
       },
       splitData:function (data) {
         for(var i=0;i<this.sensornum;i++)
@@ -285,6 +310,44 @@
         }
 
       },
+      getInitmap:function (x,y) {
+        map = new BMap.Map('gpsmap')
+        var point = new BMap.Point(x,y)
+        map.centerAndZoom(point, 12);
+        marker = new BMap.Marker(point);        // 创建标注
+        map.addOverlay(marker);
+        map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
+        map.enableContinuousZoom();
+    /*    map.addEventListener("click",function(e){
+          //console.log(e.point.lng + "," + e.point.address);
+
+          lng=e.point.lng;
+          lat=e.point.lat;
+          map.removeOverlay(marker);
+          marker = new BMap.Marker(e.point);        // 创建标注
+          map.addOverlay(marker);
+          // console.log(lat)
+        });*/
+      },
+      getNewGps:function (x,y) {
+        map.removeOverlay(marker);
+        var ggPoint=new BMap.Point(x,y);
+        var convertor=new BMap.Convertor;
+        var pointArr = [];
+        pointArr.push(ggPoint);
+        convertor.translate(pointArr, 1, 5, function (data){
+          if(data.status === 0) {
+            marker = new BMap.Marker(data.points[0]);
+            map.addOverlay(marker);
+            console.log(data)
+            var label = new BMap.Label("当前坐标:"+"("+data.points[0].lng+","+data.points[0].lat+")",{offset:new BMap.Size(20,-10)});
+            marker.setLabel(label); //添加百度label
+            map.setCenter(data.points[0]);
+          }
+        })
+
+      },
+
     }
   }
 </script>
@@ -295,7 +358,7 @@
 }
 .history-container{
   padding: 32px;
-  background-color: rgb(240, 242, 245);
+ /* background-color: rgb(240, 242, 245);*/
 }
   .elcard{
     margin-top: 20px;
