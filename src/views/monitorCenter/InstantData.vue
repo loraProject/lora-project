@@ -38,7 +38,10 @@
               <div id="Temperature" style="width: 800px; height:500px;" > </div>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"  v-show="divShow">
-              <div id="gpsmap" style="width: 100%; height:450px;margin: 20px"></div>
+              <el-row type="flex" justify="center" :gutter="32">
+                <el-tag>{{lng}}</el-tag><el-tag>,</el-tag><el-tag>{{lat}}</el-tag>
+              </el-row>
+              <el-row><div id="gpsmap" style="width: 100%; height:450px;margin: 20px"></div></el-row>
             </el-col>
           </el-row>
         </el-tabs>
@@ -107,6 +110,17 @@
               animation: false
             }
           },
+          toolbox: {
+            show : true,
+            x:'center',
+            feature : {
+              mark : {show: true},
+              dataView : {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar']},
+              restore : {show: true},
+              saveAsImage : {show: true}
+            }
+          },
           xAxis: {
             type: 'category',
             splitLine: {
@@ -145,9 +159,6 @@
     },
     destroyed(){
       this.closeWebSocket()
-    },
-    destroyed(){
-
     },
     methods:{
       getData:function () {
@@ -253,6 +264,7 @@
             this.sensornum=0
             this.notFound = true;
             this.divShow = false;
+            this.$notify.warning("此设备还没有传感器，请联系管理员添加传感器")
           }
           /*-------------------为空------------------判断-----------------*/
           else {
@@ -339,8 +351,8 @@
             marker = new BMap.Marker(data.points[0]);
             map.addOverlay(marker);
             console.log(data)
-            var label = new BMap.Label("当前坐标:"+"("+data.points[0].lng+","+data.points[0].lat+")",{offset:new BMap.Size(20,-10)});
-            marker.setLabel(label); //添加百度label
+            var label = new BMap.Label("("+data.points[0].lng+","+data.points[0].lat+")",{offset:new BMap.Size(-40,-20)});
+          //  marker.setLabel(label); //添加百度label
             map.setCenter(data.points[0]);
           }
         })

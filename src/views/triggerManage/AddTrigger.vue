@@ -1,31 +1,8 @@
 <template>
 <div class="Trigger">
-<!--  <el-header>
-    <el-card class="cardm">
-      <el-row type="flex" justify="left">
-        <el-col :xs="24" :sm="20" :md="20" :lg="18" :xl="10">
-         <el-select  placeholder="请选择设备" v-model="value" value="" @change="getSensorData">
 
-        <el-option
-          v-for="item in allDevList"
-          :key="item.devEUI"
-          :label="item.devname"
-          :value="item.devEUI">
-        </el-option>
-      </el-select>
-        </el-col>
-        <el-tooltip content="速率设置，如若设置速率，请先选择设备" placement="top" :disabled="!disabled">
-         <el-input-number v-model="num1" :min="8" :max="60" label="速率设置"> </el-input-number>
-        </el-tooltip>
-          <el-button v-bind:disabled="disabled" type="primary" style="margin-left: 5px" v-on:click="setRate">
-          速率设置
-         </el-button>
-
-      </el-row>
-    </el-card>
-  </el-header>-->
   <el-row type="flex" justify="center">
-    <el-col :xl="20" :lg="20">
+    <el-col :xl="22" :lg="22">
     <el-card  v-loading="loading"
              element-loading-text="拼命加载中"
              element-loading-spinner="el-icon-loading"

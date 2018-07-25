@@ -2,7 +2,7 @@
    <!-- <h1>地图展示，用来展示设备所在地，左侧为设备，右侧为地图。</h1>-->
   <div class="map-container" style="height: 100%">
   <el-row :gutter="32">
-    <el-col :lg="16" :xl="16" :md="16" :sm="24">
+    <el-col :lg="14" :xl="14" :md="14" :sm="24">
     <el-card class="box-card" style="width: 100% ">
       <div slot="header" class="clearfix">
         <span>设备地图</span>
@@ -12,9 +12,15 @@
       </div>
     </el-card>
     </el-col >
-    <el-col :lg="8" :xl="8" :md="8" :sm="24">
-      <el-card style="width: 100%">
-        <el-table :data=deviceInfo align="center" style="width: 100%">
+    <el-col :lg="10" :xl="10" :md="10" :sm="24">
+      <el-card style="width: 100%" class="devTable">
+        <el-table :data=deviceInfo
+                  align="center" style="width: 100%">
+          <el-table-column
+            prop="devEUI"
+            label="设备EUi"
+          >
+          </el-table-column>
           <el-table-column
           prop="label"
           label="设备名称"
@@ -82,11 +88,15 @@ export default {
               devInfo.longitude = obj.longitude
               devInfo.label = obj.devname
               devInfo.address = obj.address
+              devInfo.devEUI = obj.devEUI
               This.deviceInfo.push(devInfo)
+
             })
+            console.log("设备地图",res);//
           }
 
       })
+
     }
   }
 }
@@ -112,4 +122,24 @@ export default {
  .box-card {
    width: 480px;
  }
+
+</style>
+<style lang="scss">
+  .devTable {
+    .table-cell-class {
+      /*    background-color: aqua;*/
+      padding-top: 3px;
+      padding-bottom: 3px;
+      text-align: center;
+    }
+    .el-table--medium td, .el-table--medium th{
+      padding:10px 0;
+    }
+    .table-header-class{
+      background-color: #d3dce6;
+    }
+    .cell{
+      /*text-align:center;*/
+    }
+  }
 </style>

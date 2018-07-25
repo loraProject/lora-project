@@ -33,8 +33,7 @@
       pointData: {
         type: Array,
         default() {
-          return [{"latitude":31.910911111111112 , "longitude": 118.8920008888889, "label": "当前位置"},
-          ]
+          return [{"latitude":31.910911111111112 , "longitude": 118.8920008888889, "label": "当前位置"}] // 后期改为根据浏览器定位
         }
       }
 

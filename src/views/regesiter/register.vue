@@ -93,26 +93,14 @@
         this.$router.go(-1);
       },
       reg() {
-        /*
-        if(this.upassword == this.cpassword){
-          console.log("equal")
-         // this.$router.push({path:'#'})
-        }
 
- /!*       fetch("url",{
-          method:"post",
-          headers: { 'Accept': 'application/json', 'Content-Type': 'application/json'},
-          body:JSON.stringify({"username":this.username,"password":this.cpassword})
+          if (!isvalidUsername(this.registerForm.username) ||
+            this.registerForm.cpassword != this.registerForm
+            ||  this.registerForm.cpassword.length < 6){
+            this.$message.error('请输入正确的格式')
+              return;
+            }
 
-        })
-          .then(result => result.json())
-          .then(result=>{this.msg=result.jwt})*!/
-        else
-        /!*  alert("密码不相等")*!/
-          this.$message.error("密码不相等")
-      },
-*/
-   /*     {JSON.stringify({"userid":this.username,"password":this.cpassword})}*/
           request({
             method:'post',
             url:'/register',
@@ -162,6 +150,7 @@
          /* console.log("check username");*/
           callback(new Error('请输入正确的用户名'))
           this.$message.error('请输入正确的用户名');
+         // this.disabled = true
         } else {
           callback()
         }
@@ -173,6 +162,7 @@
         if (value.length < 6) {
           callback(new Error('密码长度不能少于6'))
           this.$message.error('密码长度不能少于6');
+         // this.disabled = true
         } else {
           callback()
         }
@@ -182,6 +172,7 @@
         console.log("check repeate length");
         console.log(value);*/
         if (value !== this.registerForm.upassword) {
+      //    this.disabled = true
           callback(new Error('两次输入不相等'))
           this.$message.error('两次输入不相等');
         } else {
@@ -217,9 +208,9 @@
           }]
         }],
         registerForm: {
-          username: 'tang',
-          upassword: 'tang',
-          cpassword: 'tang'
+          username: '',
+          upassword: '',
+          cpassword: ''
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],
