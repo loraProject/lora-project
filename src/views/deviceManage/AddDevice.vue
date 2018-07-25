@@ -4,13 +4,13 @@
         <el-row type="flex" justify="center" class="registerContent">
           <el-col :xs="24" :sm="24" :md="16" :lg="12" :xl="8">
             <el-card class="bgc">
-            <el-form label-position="left">
-              <el-form-item label="设备名" >
-                <el-input placeholder="请输入设备名称" v-model="deviceName">
+            <el-form label-position="left"  ref="addDev"  :model="devForm" :rules="devEuiRule">
+              <el-form-item label="设备名" prop="deviceName" >
+                <el-input placeholder="请输入设备名称" v-model="devForm.deviceName">
                 </el-input>
               </el-form-item>
-              <el-form-item label="设备EUI">
-                <el-input  placeholder="请输入设备16位的EUI" v-model="deviceEui">
+              <el-form-item label="设备EUI" prop="deviceEui">
+                <el-input  placeholder="请输入设备16位的EUI" v-model="devForm.deviceEui" >
                 </el-input>
               </el-form-item>
               <el-form-item label="设备地址">
@@ -65,6 +65,15 @@
           devAddress:"",
           responseinfo:"null",
           responseresult:false,
+          devEuiRule:{
+            deviceName:[ { required: true, message: '请输入名称', trigger: 'blur' }],
+          deviceEui:[ { required: true, message: '请输入devEui', trigger: 'blur' },
+                       { min: 16, max: 16, message: '长度只能是16', trigger: 'blur' }]
+          },
+          devForm:{
+            deviceName:'',
+            deviceEui:'',
+          }
         }
       },
       mounted(){
@@ -78,8 +87,8 @@
             url:'/user/adddevice',
             params:
               {
-                devEUI:this.deviceEui,
-                devname:this.deviceName,
+                devEUI:this.devForm.deviceEui,
+                devname:this.devForm.deviceName,
                 latitude:this.devDimensionality,
                 longitude:this.devLongitude,
                 address:this.devAddress,

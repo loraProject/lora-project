@@ -4,40 +4,36 @@
         <el-row  class="registerContent" :gutter="12">
           <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12" >
             <el-card class="bgc">
-            <el-form label-position="left">
-              <el-form-item label="用户名">
-                <a class="card-user-name"><b>{{addUserName}}</b></a>
-              </el-form-item>
-
-              <el-form-item label="设备名" >
-                <el-input placeholder="请输入设备名称" v-model="deviceName">
-                </el-input>
-              </el-form-item>
-              <el-form-item label="设备EUI">
-                <el-input  placeholder="请输入设备16位的EUI" v-model="deviceEui">
-                </el-input>
-              </el-form-item>
-              <el-form-item label="设备地址">
-               <el-input placeholder="请输入设备地址" v-model="devAddress">
-               </el-input>
-              </el-form-item>
-              <el-row style="width: 35%">
-                <el-form-item label="经度" >
-                  <el-input  v-model="devLongitude" >
+              <el-form label-position="left"  ref="addDev"  :model="devForm" :rules="devEuiRule">
+                <el-form-item label="设备名" prop="deviceName" >
+                  <el-input placeholder="请输入设备名称" v-model="devForm.deviceName">
                   </el-input>
                 </el-form-item>
-                <el-form-item label="维度" >
-                  <el-input v-model="devDimensionality">
+                <el-form-item label="设备EUI" prop="deviceEui">
+                  <el-input  placeholder="请输入设备16位的EUI" v-model="devForm.deviceEui" >
                   </el-input>
                 </el-form-item>
-              </el-row>
-              <el-form-item>
-                <el-button v-on:click="confirmvalue" class="el-icon-location ">
-                  获取位置
-                </el-button>
-                <el-button type="primary" v-on:click="addDevice">确认添加</el-button>
-              </el-form-item>
-            </el-form>
+                <el-form-item label="设备地址">
+                  <el-input placeholder="请输入设备地址" v-model="devAddress">
+                  </el-input>
+                </el-form-item>
+                <el-row style="width: 35%">
+                  <el-form-item label="经度" >
+                    <el-input  v-model="devLongitude" >
+                    </el-input>
+                  </el-form-item>
+                  <el-form-item label="维度" >
+                    <el-input v-model="devDimensionality">
+                    </el-input>
+                  </el-form-item>
+                </el-row>
+                <el-form-item>
+                  <el-button v-on:click="confirmvalue" class="el-icon-location ">
+                    获取位置
+                  </el-button>
+                  <el-button type="primary" v-on:click="addDevice">确认添加</el-button>
+                </el-form-item>
+              </el-form>
             </el-card>
           </el-col>
           <el-col :xs="24" :sm="24" :md="24" :lg="12" :xl="12">
@@ -86,6 +82,15 @@
           devAddress:"",
           responseinfo:"null",
           responseresult:false,
+          devEuiRule:{
+            deviceName:[ { required: true, message: '请输入名称', trigger: 'blur' }],
+            deviceEui:[ { required: true, message: '请输入devEui', trigger: 'blur' },
+              { min: 16, max: 16, message: '长度只能是16', trigger: 'blur' }]
+          },
+          devForm:{
+            deviceName:'',
+            deviceEui:'',
+          }
         }
       },
       mounted(){
@@ -102,12 +107,11 @@
             url:'/user/adminAddDevice',
             params:
               {
-                devEUI:this.deviceEui,
-                devname:this.deviceName,
+                devEUI:this.devForm.deviceEui,
+                devname:this.devForm.deviceName,
                 latitude:this.devDimensionality,
                 longitude:this.devLongitude,
                 address:this.devAddress,
-                aimUserId:this.addUserName
               },
 
           }).then(response => /*console.log(result.data.info)*/

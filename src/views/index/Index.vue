@@ -40,8 +40,9 @@
    <!--   用于小屏幕显示-->
       <el-row type="flex" justify="center"  class="hidden-md-and-up">
         <el-col :xl="16" :lg="18">
-          <el-carousel :interval="5000"  class="producer-el-carousel" arrow="always" height="180px"  >
-            <el-carousel-item v-for="item in 4" :key="item">
+          <el-carousel :interval="4000"  class="producer-el-carousel" arrow="always" height="180px"  >
+            <el-carousel-item v-for="item in sensorImg" :key="item">
+              <img class="carImg" v-lazy= "item"/>
             </el-carousel-item>
           </el-carousel>
         </el-col>
@@ -298,7 +299,7 @@
       height: 80px;
     }
     .bg-purple {
-      background: #edf4ff;
+      background: transparent;
       padding: 10px;
     }
   }

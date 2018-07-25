@@ -57,7 +57,7 @@
                           <a href="#" class="link-a"> xxx协议</a>
                         </div>
                         <el-button v-on:click="reg" type="primary" v-bind:disabled="disabled" class="mtop"
-                                   style="width: 80% ;margin: 0 10%">submit
+                                   style="width: 80% ;margin: 0 10%">注册
                         </el-button>
                       </el-form-item>
                     </el-form>
