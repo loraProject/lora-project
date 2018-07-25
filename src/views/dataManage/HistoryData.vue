@@ -198,11 +198,14 @@
             var month = strDate.substr(4,2);
             var day = strDate.substr(6,2);
             var hour = strDate.substr(8,2);
+            var min = '00'
             var seconde = '00'
             if (strDate.length > 10)
-              seconde = strDate.substr(10,2);
+              min = strDate.substr(10,2);
+            if (strDate.length > 12)
+              seconde = strDate.substr(12,2);
 
-            var formateDate = year+'-'+month+'-'+day+' '+hour +':' + seconde
+            var formateDate = year+'-'+month+'-'+day+' '+hour +':' + min + ':' + seconde
             return formateDate;
           }, // 获得格式化的日期
           getRequestFormatDate(date){

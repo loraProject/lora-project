@@ -316,7 +316,7 @@
             console.log(data.data)
           });*/
           $.ajax('http://v.juhe.cn/weather/index', {
-            data:{cityname:this.message,key:"60eac358d8575e583538007d5d3f667e"},
+            data:{cityname:this.message,key:"2a6e48d6eac576afa444d9d66bb8e671"},
             dataType: 'jsonp',
             crossDomain: true,
             success: function (data) {

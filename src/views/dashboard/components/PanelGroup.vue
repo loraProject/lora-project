@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">{{nowDay}}</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="nowSencod" :duration="1000"></count-to>
+          <count-to class="card-panel-num" :startVal="0" :endVal="nowSencod" :duration="1"></count-to>
         </div>
       </div>
     </el-col>
@@ -98,7 +98,7 @@ export default {
     this.getNowDate()
     setInterval(()=>{
       this.getNowDate()
-    },10000)
+    },1000)
   } ,
   methods: {
     handleSetLineChartData(type) {
