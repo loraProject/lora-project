@@ -5,20 +5,50 @@
     <el-card  style="height: 80vh; overflow: auto">
       <div slot="header" class="clearfix">
         <span>设备管理</span>
-        <el-button size="mini" type="danger" style="float: right" >对指定用户管理</el-button>
+        <el-button size="mini" type="danger" style="float: right" @click="showDia" >对指定用户管理</el-button>
       </div>
-  <my-tree></my-tree>
+  <my-tree :data6="treeData"></my-tree>
     </el-card>
   </el-col>
+    <el-dialog title="指定用户管理" :visible.sync="showDialog" width="60%" center top="10vh">
+     <only-user :all-user="treeData"></only-user>
+    </el-dialog>
   </el-row>
 </template>
 
 <script>
 
     import MyTree from './components/MyTree'
+    import request from '@/utils/request'
+    import OnlyUser from './components/OnlyUser'
     export default {
         name: "RoleManage",
-        components:{MyTree}
+        components:{OnlyUser, MyTree},
+        data(){
+          return{
+            treeData:[],
+            showDialog:false
+          }
+        },
+        mounted(){
+          request.get('/user/getTreeUserInfo').then((response) => {
+            const res = response.data;
+            const data = res.data;
+            if (res.code == 1) {
+              this.treeData = data;
+              console.log(this.treeData)
+            } else {
+              this.$message(res.info, 'error')
+            }
+
+          })
+        },
+        methods:{
+          showDia(){
+            console.log(this.showDialog)
+            this.showDialog  = true;
+          }
+        }
     }
 </script>
 

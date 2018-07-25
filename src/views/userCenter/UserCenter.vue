@@ -102,7 +102,103 @@
               value: '湖州',
               label: '湖州',
             }]
-          }],
+          },
+            {
+              value: 'beijing',
+              label: '北京',
+              children: [{
+                value: '北京',
+                label: '北京',
+
+              }, ]
+            },
+            {
+              value: 'tianjin',
+              label: '天津',
+              children: [{
+                value: '天津',
+                label: '天津',
+
+              },]
+            },{
+              value: 'shanghai',
+              label: '上海',
+              children: [{
+                value: '上海',
+                label: '上海',
+
+              }]
+            },
+            {
+              value: 'chongqing',
+              label: '重庆',
+              children: [{
+                value: '重庆',
+                label: '重庆',
+
+              }]
+            },
+            {
+              value: 'sichuan',
+              label: '四川',
+              children: [{
+                value: '成都',
+                label: '成都',
+
+              }, {
+                value: '达州',
+                label: '达州',
+              },
+                {
+                  value: '自贡',
+                  label: '自贡',
+                },
+                {
+                  value: '攀枝花',
+                  label: '攀枝花',
+                },
+                {
+                  value: '泸州',
+                  label: '泸州',
+                },
+                {
+                  value: '德阳',
+                  label: '德阳',
+                },
+                {
+                  value: '绵阳',
+                  label: '绵阳',
+                },
+                {
+                  value: '广元',
+                  label: '广元',
+                },
+                {
+                  value: '遂宁',
+                  label: '遂宁',
+                },
+                {
+                  value: '内江',
+                  label: '内江',
+                },
+                {
+                  value: '乐山',
+                  label: '乐山',
+                },
+                {
+                  value: '南充',
+                  label: '眉山',
+                },
+                {
+                  value: '广安',
+                  label: '广安',
+                },
+                {
+                  value: '雅安',
+                  label: '雅安',
+                }]
+            }
+          ],
         }
       },
         methods:{

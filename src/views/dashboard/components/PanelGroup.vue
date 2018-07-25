@@ -3,11 +3,11 @@
     <el-col :xs="12" :sm="12" :lg="6" class="card-panel-col">
       <div class='card-panel' @click="handleSetLineChartData('newVisitis')">
         <div class="card-panel-icon-wrapper icon-people">
-          <svg-icon icon-class="peoples" class-name="card-panel-icon" />
+          <svg-icon icon-class="time" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">New Visits</div>
-          <count-to class="card-panel-num" :startVal="0" :endVal="data1" :duration="2600"></count-to>
+          <div class="card-panel-text">{{nowDay}}</div>
+          <count-to class="card-panel-num" :startVal="0" :endVal="nowSencod" :duration="1000"></count-to>
         </div>
       </div>
     </el-col>
@@ -17,7 +17,7 @@
           <svg-icon icon-class="wind" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Wind</div>
+          <div class="card-panel-text">{{windDirection}}</div>
           <count-to class="card-panel-num" :startVal="0" :endVal="data2" :duration="3000"></count-to>
         </div>
       </div>
@@ -28,7 +28,7 @@
           <svg-icon icon-class="temperature" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Temperature</div>
+          <div class="card-panel-text">温度(°C)</div>
           <count-to class="card-panel-num" :startVal="0" :endVal="data3" :duration="3200"></count-to>
         </div>
       </div>
@@ -39,7 +39,7 @@
           <svg-icon icon-class="humidity" class-name="card-panel-icon" />
         </div>
         <div class="card-panel-description">
-          <div class="card-panel-text">Humidity</div>
+          <div class="card-panel-text">湿度(%)</div>
           <count-to class="card-panel-num" :startVal="0" :endVal="data4" :duration="3800"></count-to>
         </div>
       </div>
@@ -75,14 +75,55 @@ export default {
         default(){
           return 1024
         }
-      }
+      },
+    windDirection:{
+        type:String,
+        default(){
+          return "东南风"
+        }
+      },
+
   },
   components: {
     CountTo
   },
+  data(){
+    return{
+      nowDay:'2018-1-1',
+      nowSencod:0
+    }
+  },
+  created()
+  {
+    this.getNowDate()
+    setInterval(()=>{
+      this.getNowDate()
+    },10000)
+  } ,
   methods: {
     handleSetLineChartData(type) {
       this.$emit('handleSetLineChartData', type)
+    },
+    getNowDate(){
+      // 获取的当前时间
+      var date = new Date()
+      var mon = date.getMonth() + 1;
+      var day = date.getDate();
+      var hour = date.getHours();
+      var min = date.getMinutes();
+      if (hour < 10) hour = '0'+hour
+      if (min < 10) min = '0'+min
+      this.nowDay =  (mon<10?"0"+mon:mon) + "月" +(day<10?"0"+day:day)+'日'+' '+hour+":"+min; // 年月日时分
+      this.nowSencod = Number(date.getSeconds()) + 1;
+    },
+    changeTime(){
+      console.log("定时函数，刷新时间wai")
+      setTimeout(()=>{
+        console.log("定时函数，刷新时间中")
+        this.getNowDate()
+        console.log(this.nowDay)
+        console.log(this.nowSencod)
+      },5000)
     }
   }
 }
