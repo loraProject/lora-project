@@ -112,6 +112,7 @@
                 latitude:this.devDimensionality,
                 longitude:this.devLongitude,
                 address:this.devAddress,
+                aimUserId:this.addUserName
               },
 
           }).then(response => /*console.log(result.data.info)*/

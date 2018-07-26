@@ -93,9 +93,10 @@
         allDevList:[],
         sensorList:[],
         value:"",
-        weburl:"ws://192.168.1.117:8090/websocket/",
+        weburl:"ws://www.liuyunxing.cn:8090/websocket/",  // 实时数据url
         webtmpurl:"",
         lat:"",
+        lng:'',
         lang:"",
         //token
         token:getToken(),
@@ -190,7 +191,6 @@
             return;
           }
           var data1=JSON.parse(event.data)
-          console.log(event.data)
           /*---------------------截取gps数据绘图---------------------*/
           That.lat=data1.latitude.value
           That.lng=data1.longitude.value
