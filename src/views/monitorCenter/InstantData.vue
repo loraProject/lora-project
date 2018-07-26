@@ -81,6 +81,7 @@
     name: "InstantData",
     data(){
       return{
+        nowTab:'',
         notFound:true,
         divShow:false,
         sensorline:[],
@@ -89,6 +90,7 @@
         flag:true,
         datatest:[],
         valueline:Math.random()*1000,
+
 
         allDevList:[],
         sensorList:[],
@@ -143,7 +145,7 @@
             }
           ],
           series: [{
-            name: 'sensorData',
+            name: drawflag,
             type: 'line',
             showSymbol: true,
             hoverAnimation: false,
@@ -204,6 +206,7 @@
               data:allsensor.get("date")
             }],
             series: [{
+              name: That.nowTab,
               data: allsensor.get(drawflag)
             }]
           });
@@ -301,6 +304,9 @@
        // console.log(tab.index)
       //  console.log(tab.label)
         drawflag=tab.label
+        this.nowTab = tab.label;
+     //   console.log(tab);
+        console.log(this.nowTab);
         let charts =this.$echarts.init(document.getElementById('Temperature'),'macarons')
         charts.setOption(this.lineOptiontest)
         charts.setOption({
@@ -308,6 +314,7 @@
             data:allsensor.get("date")
           }],
           series: [{
+            name:this.nowTab,
             data: allsensor.get(drawflag)
           }]
         });
@@ -350,7 +357,7 @@
           if(data.status === 0) {
             marker = new BMap.Marker(data.points[0]);
             map.addOverlay(marker);
-            console.log(data)
+           // console.log(data)
             var label = new BMap.Label("("+data.points[0].lng+","+data.points[0].lat+")",{offset:new BMap.Size(-40,-20)});
           //  marker.setLabel(label); //添加百度label
             map.setCenter(data.points[0]);

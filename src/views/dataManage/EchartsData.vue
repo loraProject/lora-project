@@ -162,7 +162,7 @@
             console.log(this.sensorValue)*/
             allchart.setOption({
               series: [
-                { name:'sensorname', data: this.sensorValue},
+                { name:this.sensorName, data: this.sensorValue},
                /* { name:'温度', data:this.number2},
                 { name:'湿度', data:this.number3},
                 { name:'气体', data:this.number4}*/]
@@ -182,7 +182,7 @@
           mychart.setOption(this.optionData)
           mychart.setOption({
             series: [
-              { name:'sensorname', data: this.sensorValue},]
+              { name:this.sensorName, data: this.sensorValue},]
           });
         }
       },

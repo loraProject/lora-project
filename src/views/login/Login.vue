@@ -105,8 +105,8 @@
         routerOne:'/register'
         ,
         loginForm: {
-          username: 'lyx',
-          password: 'liuyunxing'
+          username: 'user',
+          password: '123456'
         },
         loginRules: {
           username: [{required: true, trigger: 'blur', validator: validateUsername}],

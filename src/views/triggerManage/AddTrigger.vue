@@ -326,6 +326,7 @@
           console.log(row.switchId)
         },
         modifyStatusDev:function () {
+          this.loadSwtich = true;
           var paramjson = {}
           for(var i=0;i<this.swtichStatus.length;i++)
           {
@@ -335,6 +336,7 @@
               param.append('devEUI',this.value);
               param.append('jsonstr',JSON.stringify(paramjson))
               request.post('/user/devices/changeRelayMulSwitch',param).then(data=>{
+                this.loadSwtich = false
              console.log(data.data)
              this.$message({
                     type: 'info',
@@ -342,7 +344,7 @@
                   })
            })
             console.log(paramjson)
-          this.dialogVisible2 = false
+         // this.dialogVisible2 = false
 
         },
        setRate:function () {
@@ -350,12 +352,21 @@
          let param = new URLSearchParams()
          param.append('devEUI',this.value);
          param.append('frequency',String(this.num1))
+         const loading = this.$loading({
+           lock: true,
+           text: '正在设置状态，请稍后......',
+           spinner: 'el-icon-loading',
+           background: 'rgba(0, 0, 0, 0.7)'
+         });
          request.post('/user/changeFrequency',param).then(data=>{
            console.log(data)
+           loading.close();
          this.$message({
                     type: 'info',
                     message: data.data.info
-                  })})
+                  })}).catch((err)=>{
+           loading.close();
+         })
        }
 
       }

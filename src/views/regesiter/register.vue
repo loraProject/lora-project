@@ -94,8 +94,11 @@
       },
       reg() {
 
+
+         //  console.log(isvalidUsername(this.registerForm.username));
+          // console.log()
           if (!isvalidUsername(this.registerForm.username) ||
-            this.registerForm.cpassword != this.registerForm
+            this.registerForm.cpassword != this.registerForm.upassword
             ||  this.registerForm.cpassword.length < 6){
             this.$message.error('请输入正确的格式')
               return;
