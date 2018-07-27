@@ -30,12 +30,12 @@
               </el-row>
             </el-tab-pane>
           </template>
-          <el-row type="flex" justify="center">
-            <el-col :xs="20" :sm="20" :md="18" :lg="18" :xl="18" v-show="notFound">
+          <el-row >
+            <el-col :xs="20" :sm="20" :md="18" :lg="18" :xl="18" v-show="!divShow">
               <not-found ></not-found>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="16" :xl="16" v-show="divShow">
-              <div id="Temperature" style="width: 800px; height:500px;" > </div>
+              <div id="Temperature" style="width: 100%; height:500px;" > </div>
             </el-col>
             <el-col :xs="24" :sm="24" :md="24" :lg="8" :xl="8"  v-show="divShow">
               <el-row type="flex" justify="center" :gutter="32">
@@ -64,7 +64,7 @@
   import ElRow from "element-ui/packages/row/src/row";
   import  request from '@/utils/request'
   import ElTabPane from "element-ui/packages/tabs/src/tab-pane";
-  import $ from 'jquery'
+  import { debounce } from '@/utils'
   require('echarts/theme/macarons') // echarts theme
   var websocket;
   var allsensor=new Map()
@@ -79,6 +79,13 @@
       ElRow,
       ElCard},
     name: "InstantData",
+    activated(){ // actived
+      console.log("in actived")
+      if (this.chart) {
+          this.chart.resize()
+        }
+
+    },
     data(){
       return{
         nowTab:'',
@@ -152,6 +159,7 @@
             data: this.datatest
           }]
         },
+        chart:null
 
 
     }
@@ -163,14 +171,54 @@
     destroyed(){
       this.closeWebSocket()
     },
+    beforeDestroy() {
+      if (!this.chart) {
+        return
+      }
+      if (this.autoResize) {
+        window.removeEventListener('resize', this.__resizeHanlder)
+      }
+
+      const sidebarElm = document.getElementsByClassName('sidebar-container')[0]
+      if (sidebarElm != null)
+        sidebarElm.removeEventListener('transitionend', this.__resizeHanlder)
+
+      this.chart.dispose()
+      this.chart = null
+
+      this.chart.dispose()
+      this.chart = null
+    },
     methods:{
       getData:function () {
 
        const  That=this
+        console.log("in getData")
+
         let charts =That.$echarts.init(document.getElementById('Temperature'),'macarons')
+        this.chart = charts;
         charts.setOption(That.lineOptiontest)
+        this.__resizeHanlder = debounce(() => {
+          if (charts) {
+            charts.resize()
+        //    console.log("1111改变charts大小")
+          }
+        }, 100)
+        window.addEventListener('resize', this.__resizeHanlder)  // 自适应echarts大小
+      //  监听侧边栏，自适应大小
+       // this.chart.resize()
+        const sidebarElm = document.getElementsByClassName('sidebar-container')[0]
+        if (sidebarElm != null)
+          sidebarElm.addEventListener('transitionend', this.__resizeHanlder)
+
+        console.log("in setOptins",charts) // charts  modify by liuyunxing
+        setTimeout(()=>{console.log('等待');charts.resize();},300)
+       // charts.resize();
+
         if('WebSocket' in window){
-          websocket = new WebSocket(this.webtmpurl+this.token);
+          websocket = new ReconnectingWebSocket(this.webtmpurl+this.token);  // 支持断线重连的websocket
+          websocket.debug = true;  // 开启debug调试
+          websocket.timeoutInterval = 10000; // 设置在关闭和重试之前等待连接成功的最大时间(毫秒)。
 
           //charts.setOption(this.lineOptiontest)
         }
@@ -187,15 +235,22 @@
 
         //接收到消息的回调方法
         websocket.onmessage = function(event){
+
           if ( !That.isJSON(event.data) ){ // 如果此时返回的数据不是json串
             console.log("后台发来消息： " + event.data)
-            That.$notify.success("开始获取实时数据");
+            That.$notify.success("后台发来消息： " + event.data );
             return;
           }
           var data1=JSON.parse(event.data)
           /*---------------------截取gps数据绘图---------------------*/
-          That.lat=data1.latitude.value
-          That.lng=data1.longitude.value
+          console.log(data1.latitude, "经纬度获取");
+          console.log(data1.longitude, "经纬度获取");
+          if (data1.latitude != null && data1.longitude != null){
+           // That.$message.success("此次gps有获取到");
+            That.lat=data1.latitude.value
+            That.lng=data1.longitude.value
+          }
+
 
           //console.log(That.lat)
          // console.log(That.lng)
@@ -211,19 +266,19 @@
             }]
           });
 
-
-
         }
-
+        setTimeout(()=>{charts.resize()},300); // 调整大小
         //连接关闭的回调方法
         websocket.onclose = function(){
 
+          That.$message.error("链接关闭");
           console.log("关闭连接")
         }
         //监听窗口关闭事件，当窗口关闭时，主动去关闭websocket连接，防止连接还没断开就关闭窗口，server端会抛异常。
         window.onbeforeunload = function(){
           websocket.close();
         }
+
       },
       isJSON(str) {
         if (typeof str == 'string') { // 判断是否是json字符串
@@ -287,15 +342,14 @@
         })
         //this.closeWebSocket()
         if (this.flag) {
-          //console.log(this.value)
+
           this.webtmpurl = this.weburl + this.value + "/"
-         // console.log(this.weburl)
-         // console.log(this.token)
+          console.log("in webtempurl", this.webtmpurl)
           this.getData();
           this.flag=false
         }
         else{
-          this.closeWebSocket()
+          this.closeWebSocket(); // 关闭上一次的websocket
           this.webtmpurl = this.weburl + this.value + "/"
           this.getData();
         }
@@ -318,6 +372,8 @@
             data: allsensor.get(drawflag)
           }]
         });
+
+        setTimeout(()=>{charts.resize()},300)
       },
       splitData:function (data) {
         for(var i=0;i<this.sensornum;i++)
@@ -341,7 +397,7 @@
       getInitmap:function (x,y) {
         map = new BMap.Map('gpsmap')
         var point = new BMap.Point(x,y)
-        map.centerAndZoom(point, 12);
+        map.centerAndZoom(point, 14);
         marker = new BMap.Marker(point);        // 创建标注
         map.addOverlay(marker);
         map.enableScrollWheelZoom();   //启用滚轮放大缩小，默认禁用
@@ -361,6 +417,7 @@
             var label = new BMap.Label("("+data.points[0].lng+","+data.points[0].lat+")",{offset:new BMap.Size(-40,-20)});
           //  marker.setLabel(label); //添加百度label
             map.setCenter(data.points[0]);
+          //  map.setViewport([data.points[0]]);
           }
         })
 
