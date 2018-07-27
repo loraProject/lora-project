@@ -5,6 +5,7 @@
       node-key="id"
       @node-click="getNodeInfo"
       :expand-on-click-node="false"
+      class="admin-tree"
     >
      <span class="custom-tree-node" slot-scope="{ node, data }">
        <el-row type="flex" :gutter="32" justify="start">
@@ -477,14 +478,18 @@
   .el-tree-node__content {
     .card-panel-icon {
       font-size: 28px;
-      color: #4AB7BD;
+      color: #ffffff;
+      background: #42b983;
+      border-radius: 8px;
     }
     &:hover {
       .card-panel-icon {
 
-        color: #ffffff;
-        background: #4AB7BD;
-        border-radius: 10px;
+        /*color: #ffffff;
+        background: #4AB7BD;*/
+        color: #42b983;
+        background: transparent;
+        border-radius: 8px;
 
       }
     }
@@ -499,21 +504,23 @@
   }
 </style>
 <style lang="scss">
-  .el-tree-node__content {
-    height: 48px;
-    border-bottom: solid 0.5px rgba(225,225,225,1);
-    line-height: 48px;
-    width: 100%;
-    .operate-button {
-      /*margin-left: 80%;*/
+  .admin-tree {
+    .el-tree-node__content {
+      height: 48px;
+      border-bottom: solid 0.5px rgba(225, 225, 225, 1);
+      line-height: 48px;
+      width: 100%;
+      .operate-button {
+        /*margin-left: 80%;*/
+      }
+      .el-button {
+        padding: 5px;
+      }
     }
-    .el-button{
-      padding: 5px;
-    }
-  }
 
-  .custom-tree-node {
-    width: 100%;
+    .custom-tree-node {
+      width: 100%;
+    }
   }
 
 </style>

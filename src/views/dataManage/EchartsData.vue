@@ -8,28 +8,31 @@
     <el-row type="flex" justify="center">
     </el-row>
     <el-row type="flex" justify="center">
-      <el-col :xs="24" :sm="24" :md="22" :lg="18" :xl="18">
+      <el-col :xs="24" :sm="24" :md="22" :lg="22" :xl="22">
         <el-card>
           <div slot="header" class="clearfix" style="width: 100%">
             <el-row type="flex" justify="center">
-              <el-col  :xs="12" :sm="10" :md="8" :lg="5" :xl="3" class="cardmargin">
+              <el-col  :xs="12" :sm="8" :md="8" :lg="5" :xl="3" class="cardmargin">
                 <el-tag >
                   设备名称：{{this.devName}}
                 </el-tag>
               </el-col>
-              <el-col  :xs="12" :sm="10" :md="8" :lg="5" :xl="3" class="cardmargin">
+              <el-col  :xs="12" :sm="8" :md="8" :lg="5" :xl="3" class="cardmargin">
                 <el-tag>
                   传感器数据类型：{{this.sensorName}}
                 </el-tag>
               </el-col>
-              <el-col  :xs="12" :sm="10" :md="8" :lg="5" :xl="3" class="cardmargin">
+              <el-col  :xs="12" :sm="8" :md="8" :lg="5" :xl="3" class="cardmargin">
                 <el-tag type="success">
                   历史数据的折线显示
                 </el-tag>
               </el-col>
             </el-row>
           </div>
-        <div id="alldata1" style=" height:500px; width: 100%"></div>
+          <el-row>
+           <div id="alldata1" style=" height:580px; width: 100%"></div>
+          </el-row>
+
         </el-card>
       <!--  <el-button type="primary" v-on:click="getdata">
           获取数据
@@ -47,6 +50,8 @@
   import  store from '../../store'
   import ElRow from "element-ui/packages/row/src/row";
   import ElCard from "element-ui/packages/card/src/main";
+  import { debounce } from '@/utils'
+  require('echarts/theme/macarons') // echarts theme
   Vue.prototype.$echarts=echarts
 
     var mychart;
@@ -55,8 +60,16 @@
       components:{
         ElCard,
         ElRow},
+      activated(){ // actived
+        console.log("in actived")
+        if (mychart) {
+          mychart.resize()
+        }
+
+      },
         data(){
             return{
+              charts:'',
               optionData:{
 
                 tooltip: {
@@ -82,12 +95,12 @@
                 dataZoom: [
                   {
                     show: true,
-                    start: 0,
+                    start: 40,
                     end: 100
                   },
                   {
                     type: 'inside',
-                    start: 0,
+                    start: 40,
                     end: 100
                   },
                   {
@@ -97,7 +110,7 @@
                     width: 30,
                     height: '80%',
                     showDataShadow: false,
-                    left: '93%'
+                    left: '85%'
                   }
                 ],
                 legend: {
@@ -150,9 +163,10 @@
             'dateValue'
         ])
       },
+
       methods:{
         showdata:function () {
-            let allchart =this.$echarts.init(document.getElementById('alldata1'));
+            let allchart =this.$echarts.init(document.getElementById('alldata1'),'macarons');
             console.log("在画图",allchart)
             mychart=allchart
             this.optionData.xAxis[0].data=this.dateValue
@@ -167,6 +181,20 @@
                 { name:'湿度', data:this.number3},
                 { name:'气体', data:this.number4}*/]
             });
+
+          //mychart.setOption(That.lineOptiontest)
+          this.__resizeHanlder = debounce(() => {
+            if (mychart) {
+              mychart.resize()
+              //    console.log("1111改变charts大小")
+            }
+          }, 100)
+          window.addEventListener('resize', this.__resizeHanlder)  // 自适应echarts大小
+          //  监听侧边栏，自适应大小
+          // this.chart.resize()
+          const sidebarElm = document.getElementsByClassName('sidebar-container')[0]
+          if (sidebarElm != null)
+            sidebarElm.addEventListener('transitionend', this.__resizeHanlder)
           },
 
         dataCompare:function (obj1,obj2) {

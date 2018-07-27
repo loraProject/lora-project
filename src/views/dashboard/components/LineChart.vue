@@ -62,7 +62,7 @@ export default {
           this.chart.resize()
         }
       }, 100)
-      window.addEventListener('resize', this.__resizeHanlder)
+      window.addEventListener('resize', this.__resizeHanlder)  // 自适应echarts大小
     }
 
     // 监听侧边栏的变化
@@ -169,6 +169,8 @@ export default {
       })
     },
     initChart() {
+
+    //  console.log(this.$el)
       this.chart = echarts.init(this.$el, 'macarons')
       this.setOptions(this.chartData)
     },

@@ -128,10 +128,11 @@
           if (valid){
             this.$store.dispatch('LoginByUsername', this.loginForm)
               .then((res)=>{
-
+                  this.loading = false;
                   console.log("this is info", res)
                   if (res.status) { // 如果是真
                     this.$router.push('/')
+                    this.loading = true;
                   }else {
                     this.$message({
                       showClose: true,
